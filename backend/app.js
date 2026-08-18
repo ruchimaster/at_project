@@ -3,6 +3,9 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const {
+    startDonationExpiryJob
+} = require("./jobs/donationExpiry");
 
 dotenv.config();
 
@@ -10,6 +13,7 @@ const app = express();
 
 // Connect MongoDB
 connectDB();
+startDonationExpiryJob();
 
 // Middleware
 app.use(cors());
