@@ -1,28 +1,27 @@
 const express = require("express");
 
-const {
-    createWarning,
-    getAllWarnings,
-    getWarningById,
-    updateWarning,
-    deleteWarning
-} = require("../controllers/warningController");
-
 const router = express.Router();
 
-// Create warning
-router.post("/", createWarning);
+const {
+  createWarning,
+  getAllWarnings,
+  getWarningById,
+  updateWarning,
+  deleteWarning,
+} = require("../controllers/warningController");
 
-// Get all warnings
-router.get("/", getAllWarnings);
+const { protect } = require("../middleware/authMiddleware");
 
-// Get warning by ID
-router.get("/:warning_id", getWarningById);
+const { authorizeRoles } = require("../middleware/roleMiddleware");
 
-// Update warning
-router.put("/:warning_id", updateWarning);
+router.post("/", protect, authorizeRoles("Admin"), createWarning);
 
-// Delete warning
-router.delete("/:warning_id", deleteWarning);
+router.get("/", protect, authorizeRoles("Admin"), getAllWarnings);
+
+router.get("/:warning_id", protect, getWarningById);
+
+router.put("/:warning_id", protect, authorizeRoles("Admin"), updateWarning);
+
+router.delete("/:warning_id", protect, authorizeRoles("Admin"), deleteWarning);
 
 module.exports = router;

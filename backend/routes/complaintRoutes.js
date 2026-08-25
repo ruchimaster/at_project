@@ -1,28 +1,36 @@
 const express = require("express");
 
-const {
-    createComplaint,
-    getAllComplaints,
-    getComplaintById,
-    updateComplaint,
-    deleteComplaint
-} = require("../controllers/complaintController");
-
 const router = express.Router();
 
-// Create complaint
-router.post("/", createComplaint);
+const {
+  createComplaint,
+  getAllComplaints,
+  getComplaintById,
+  updateComplaint,
+  deleteComplaint,
+} = require("../controllers/complaintController");
 
-// Get all complaints
-router.get("/", getAllComplaints);
+const { protect } = require("../middleware/authMiddleware");
 
-// Get complaint by ID
-router.get("/:complaint_id", getComplaintById);
+const { authorizeRoles } = require("../middleware/roleMiddleware");
 
-// Update complaint
-router.put("/:complaint_id", updateComplaint);
+const { validate } = require("../middleware/validationMiddleware");
 
-// Delete complaint
-router.delete("/:complaint_id", deleteComplaint);
+const { validateComplaint } = require("../validators/complaintValidator");
+
+router.post("/", protect, validate(validateComplaint), createComplaint);
+
+router.get("/", protect, authorizeRoles("Admin"), getAllComplaints);
+
+router.get("/:complaint_id", protect, getComplaintById);
+
+router.put("/:complaint_id", protect, authorizeRoles("Admin"), updateComplaint);
+
+router.delete(
+  "/:complaint_id",
+  protect,
+  authorizeRoles("Admin"),
+  deleteComplaint,
+);
 
 module.exports = router;

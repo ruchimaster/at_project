@@ -1,27 +1,42 @@
 const express = require("express");
 
-const {
-    createDonation,
-    getAllDonations,
-    getDonationById,
-    updateDonation,
-    deleteDonation
-} = require("../controllers/donationController");
-
 const router = express.Router();
 
-// Create donation
-router.post("/", createDonation);
-// Get all donations
-router.get("/", getAllDonations);
+const {
+  createDonation,
+  getAllDonations,
+  getDonationById,
+  updateDonation,
+  deleteDonation,
+} = require("../controllers/donationController");
 
-// Get donation by ID
-router.get("/:donation_id", getDonationById);
+const { protect } = require("../middleware/authMiddleware");
 
-// Update donation
-router.put("/:donation_id", updateDonation);
+const { authorizeRoles } = require("../middleware/roleMiddleware");
 
-// Delete donation
-router.delete("/:donation_id", deleteDonation);
+const { validate } = require("../middleware/validationMiddleware");
+
+const { validateDonation } = require("../validators/donationValidator");
+
+router.post(
+  "/",
+  protect,
+  authorizeRoles("Donor"),
+  validate(validateDonation),
+  createDonation,
+);
+
+router.get("/", protect, getAllDonations);
+
+router.get("/:donation_id", protect, getDonationById);
+
+router.put("/:donation_id", protect, authorizeRoles("Donor"), updateDonation);
+
+router.delete(
+  "/:donation_id",
+  protect,
+  authorizeRoles("Donor"),
+  deleteDonation,
+);
 
 module.exports = router;

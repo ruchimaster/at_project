@@ -1,28 +1,49 @@
 const express = require("express");
 
-const {
-    createPickupRequest,
-    getAllPickupRequests,
-    getPickupRequestById,
-    updatePickupRequest,
-    deletePickupRequest
-} = require("../controllers/pickupRequestController");
-
 const router = express.Router();
 
-// Create pickup request
-router.post("/", createPickupRequest);
+const {
+  createPickupRequest,
+  getAllPickupRequests,
+  getPickupRequestById,
+  updatePickupRequest,
+  deletePickupRequest,
+} = require("../controllers/pickupRequestController");
 
-// Get all pickup requests
-router.get("/", getAllPickupRequests);
+const { protect } = require("../middleware/authMiddleware");
 
-// Get pickup request by ID
-router.get("/:request_id", getPickupRequestById);
+const { authorizeRoles } = require("../middleware/roleMiddleware");
 
-// Update pickup request
-router.put("/:request_id", updatePickupRequest);
+const { validate } = require("../middleware/validationMiddleware");
 
-// Delete pickup request
-router.delete("/:request_id", deletePickupRequest);
+const {
+  validatePickupRequest,
+} = require("../validators/pickupRequestValidator");
+
+router.post(
+  "/",
+  protect,
+  authorizeRoles("NGO"),
+  validate(validatePickupRequest),
+  createPickupRequest,
+);
+
+router.get("/", protect, authorizeRoles("Admin"), getAllPickupRequests);
+
+router.get("/:request_id", protect, getPickupRequestById);
+
+router.put(
+  "/:request_id",
+  protect,
+  authorizeRoles("Donor", "NGO"),
+  updatePickupRequest,
+);
+
+router.delete(
+  "/:request_id",
+  protect,
+  authorizeRoles("Donor", "NGO"),
+  deletePickupRequest,
+);
 
 module.exports = router;
