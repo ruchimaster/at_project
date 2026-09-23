@@ -145,8 +145,7 @@ const loginUser = async (req, res) => {
 
         if (
             user.account_status === "Rejected" ||
-            user.account_status === "Suspended" ||
-            user.account_status === "Blocked"
+            user.account_status === "Suspended" 
         ) {
             return res.status(403).json({
                 message: `Your account is ${user.account_status.toLowerCase()}`
@@ -365,6 +364,136 @@ const deleteUser = async (req, res) => {
     }
 };
 
+// ==========================================
+// GET PENDING NGOs
+// ==========================================
+const getPendingNGOs = async (req, res) => {
+    try {
+        const ngos = await User.find({
+            role: "NGO",
+            account_status: "Pending"
+        }).select("-password");
+
+        res.status(200).json({
+            message: "Pending NGOs fetched successfully",
+            ngos
+        });
+
+    } catch (error) {
+        console.error("Get pending NGOs error:", error);
+
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
+
+
+// ==========================================
+// APPROVE NGO
+// ==========================================
+const approveNGO = async (req, res) => {
+    try {
+        const ngo = await User.findOne({
+            user_id: req.params.user_id,
+            role: "NGO"
+        });
+
+        if (!ngo) {
+            return res.status(404).json({
+                message: "NGO not found"
+            });
+        }
+
+        if (ngo.account_status === "Active") {
+            return res.status(400).json({
+                message: "NGO is already approved"
+            });
+        }
+
+        if (ngo.account_status === "Rejected") {
+            return res.status(400).json({
+                message: "Rejected NGO cannot be approved"
+            });
+        }
+
+        ngo.account_status = "Active";
+
+        await ngo.save();
+
+        res.status(200).json({
+            message: "NGO approved successfully",
+            ngo: {
+                user_id: ngo.user_id,
+                organization_name: ngo.organization_name,
+                organization_type: ngo.organization_type,
+                contact_person: ngo.contact_person,
+                email: ngo.email,
+                phone: ngo.phone,
+                address: ngo.address,
+                role: ngo.role,
+                account_status: ngo.account_status
+            }
+        });
+
+    } catch (error) {
+        console.error("Approve NGO error:", error);
+
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
+
+
+// ==========================================
+// REJECT NGO
+// ==========================================
+const rejectNGO = async (req, res) => {
+    try {
+        const ngo = await User.findOne({
+            user_id: req.params.user_id,
+            role: "NGO"
+        });
+
+        if (!ngo) {
+            return res.status(404).json({
+                message: "NGO not found"
+            });
+        }
+
+        if (ngo.account_status !== "Pending") {
+            return res.status(400).json({
+                message: `NGO account is already ${ngo.account_status}`
+            });
+        }
+
+        ngo.account_status = "Rejected";
+
+        await ngo.save();
+
+        res.status(200).json({
+            message: "NGO rejected successfully",
+            ngo: {
+                user_id: ngo.user_id,
+                organization_name: ngo.organization_name,
+                email: ngo.email,
+                role: ngo.role,
+                account_status: ngo.account_status
+            }
+        });
+
+    } catch (error) {
+        console.error("Reject NGO error:", error);
+
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
 
 // ==========================================
 // EXPORT CONTROLLERS
@@ -375,5 +504,8 @@ module.exports = {
     getAllUsers,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    getPendingNGOs,
+    approveNGO,
+    rejectNGO
 };
