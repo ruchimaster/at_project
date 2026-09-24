@@ -1,4 +1,5 @@
 const Notification = require("../models/notifications");
+const User = require("../models/users");
 
 // ==========================================
 // CREATE NOTIFICATION
@@ -14,6 +15,17 @@ const createNotification = async (req, res) => {
         if (!user_id || !message || !type) {
             return res.status(400).json({
                 message: "All required fields must be provided"
+            });
+        }
+
+        // Check whether target user exists
+        const user = await User.findOne({
+            user_id
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "Target user not found"
             });
         }
 
@@ -55,23 +67,33 @@ const createNotification = async (req, res) => {
 };
 
 
+
 // ==========================================
 // GET ALL NOTIFICATIONS
 // ==========================================
 const getAllNotifications = async (req, res) => {
-    try {
-        const notifications = await Notification.find();
+  try {
+    let notifications;
 
-        res.status(200).json(notifications);
-
-    } catch (error) {
-        console.error("Get notifications error:", error);
-
-        res.status(500).json({
-            message: "Server error",
-            error: error.message
-        });
+    if (req.user.role === "Admin") {
+      // Admin can see all notifications
+      notifications = await Notification.find();
+    } else {
+      // Normal user can see only their own notifications
+      notifications = await Notification.find({
+        user_id: req.user.user_id,
+      });
     }
+
+    res.status(200).json(notifications);
+  } catch (error) {
+    console.error("Get notifications error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
 };
 
 
@@ -79,27 +101,37 @@ const getAllNotifications = async (req, res) => {
 // GET NOTIFICATION BY ID
 // ==========================================
 const getNotificationById = async (req, res) => {
-    try {
-        const notification = await Notification.findOne({
-            notification_id: req.params.notification_id
-        });
+  try {
+    const notification = await Notification.findOne({
+      notification_id: req.params.notification_id,
+    });
 
-        if (!notification) {
-            return res.status(404).json({
-                message: "Notification not found"
-            });
-        }
-
-        res.status(200).json(notification);
-
-    } catch (error) {
-        console.error("Get notification error:", error);
-
-        res.status(500).json({
-            message: "Server error",
-            error: error.message
-        });
+    if (!notification) {
+      return res.status(404).json({
+        message: "Notification not found",
+      });
     }
+
+    // Admin can view any notification
+    // Normal user can view only their own notification
+    if (
+      req.user.role !== "Admin" &&
+      notification.user_id !== req.user.user_id
+    ) {
+      return res.status(403).json({
+        message: "You are not authorized to view this notification",
+      });
+    }
+
+    res.status(200).json(notification);
+  } catch (error) {
+    console.error("Get notification error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
 };
 
 
@@ -118,6 +150,13 @@ const updateNotification = async (req, res) => {
             });
         }
 
+        // Only Admin can update notifications
+        if (req.user.role !== "Admin") {
+            return res.status(403).json({
+                message: "Only Admin can update notifications"
+            });
+        }
+
         const {
             message,
             type,
@@ -130,10 +169,6 @@ const updateNotification = async (req, res) => {
 
         if (type !== undefined) {
             notification.type = type;
-        }
-
-        if (is_read !== undefined) {
-            notification.is_read = is_read;
         }
 
         await notification.save();
@@ -153,13 +188,12 @@ const updateNotification = async (req, res) => {
     }
 };
 
-
 // ==========================================
 // DELETE NOTIFICATION
 // ==========================================
 const deleteNotification = async (req, res) => {
     try {
-        const notification = await Notification.findOneAndDelete({
+        const notification = await Notification.findOne({
             notification_id: req.params.notification_id
         });
 
@@ -168,6 +202,17 @@ const deleteNotification = async (req, res) => {
                 message: "Notification not found"
             });
         }
+
+        // Only Admin can delete notifications
+        if (req.user.role !== "Admin") {
+            return res.status(403).json({
+                message: "Only Admin can delete notifications"
+            });
+        }
+
+        await Notification.deleteOne({
+            notification_id: req.params.notification_id
+        });
 
         res.status(200).json({
             message: "Notification deleted successfully"
@@ -183,6 +228,61 @@ const deleteNotification = async (req, res) => {
     }
 };
 
+// ==========================================
+// UPDATE NOTIFICATION STATUS
+// ==========================================
+const updateNotificationStatus = async (req, res) => {
+    try {
+        const notification = await Notification.findOne({
+            notification_id: req.params.notification_id
+        });
+
+        if (!notification) {
+            return res.status(404).json({
+                message: "Notification not found"
+            });
+        }
+
+        const { is_read } = req.body;
+
+        if (typeof is_read !== "boolean") {
+            return res.status(400).json({
+                message: "is_read must be true or false"
+            });
+        }
+
+        // Admin can update any notification
+        if (req.user.role === "Admin") {
+            notification.is_read = is_read;
+        }
+
+        // Normal user can update only their own notification
+        else {
+            if (notification.user_id !== req.user.user_id) {
+                return res.status(403).json({
+                    message: "You are not authorized to update this notification"
+                });
+            }
+
+            notification.is_read = is_read;
+        }
+
+        await notification.save();
+
+        res.status(200).json({
+            message: "Notification status updated successfully",
+            notification
+        });
+
+    } catch (error) {
+        console.error("Update notification status error:", error);
+
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
 
 // ==========================================
 // EXPORT CONTROLLERS
@@ -192,5 +292,6 @@ module.exports = {
     getAllNotifications,
     getNotificationById,
     updateNotification,
-    deleteNotification
+    deleteNotification,
+    updateNotificationStatus
 };

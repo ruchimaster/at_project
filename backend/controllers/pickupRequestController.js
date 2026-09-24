@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const PickupRequest = require("../models/pickupRequests");
 const Donation = require("../models/donations");
 
@@ -6,53 +7,53 @@ const Donation = require("../models/donations");
 // NGO creates a request for an Available donation
 // ==========================================
 const createPickupRequest = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
+
     const { donation_id } = req.body;
 
-    // donation_id is required
     if (!donation_id) {
+      await session.abortTransaction();
+
       return res.status(400).json({
         message: "Donation ID is required",
       });
     }
 
-    // Find donation
-    const donation = await Donation.findOne({
-      donation_id,
-    });
+    // Find donation only if it is still Available
+    // and change it to Requested atomically
+    const donation = await Donation.findOneAndUpdate(
+      {
+        donation_id,
+        status: "Available",
+      },
+      {
+        $set: {
+          status: "Requested",
+        },
+      },
+      {
+        new: true,
+        session,
+      }
+    );
 
     if (!donation) {
-      return res.status(404).json({
-        message: "Donation not found",
-      });
-    }
+      await session.abortTransaction();
 
-    // Only Available donations can be requested
-    if (donation.status !== "Available") {
       return res.status(400).json({
-        message: `Donation cannot be requested because its status is ${donation.status}`,
+        message: "Donation is not available for pickup request",
       });
     }
 
-    // Check whether this NGO already has a request for this donation
-    const existingRequest = await PickupRequest.findOne({
-      donation_id,
-      ngo_id: req.user.user_id,
-      request_status: {
-        $in: ["Pending", "Accepted"],
-      },
-    });
-
-    if (existingRequest) {
-      return res.status(400).json({
-        message: "You already have an active request for this donation",
-      });
-    }
-
-    // Generate Request ID
-    const lastRequest = await PickupRequest.findOne().sort({
-      request_id: -1,
-    });
+    // Generate request ID
+    const lastRequest = await PickupRequest.findOne()
+      .sort({
+        request_id: -1,
+      })
+      .session(session);
 
     let request_id = "REQ001";
 
@@ -64,31 +65,42 @@ const createPickupRequest = async (req, res) => {
       request_id = `REQ${String(lastNumber + 1).padStart(3, "0")}`;
     }
 
-    // Create pickup request
-    const pickupRequest = await PickupRequest.create({
-      request_id,
-      donation_id,
-      ngo_id: req.user.user_id,
-      request_status: "Pending",
-    });
+    // Create pickup request inside the same transaction
+    const pickupRequest = await PickupRequest.create(
+      [
+        {
+          request_id,
+          donation_id,
+          ngo_id: req.user.user_id,
+          request_status: "Pending",
+        },
+      ],
+      {
+        session,
+      }
+    );
 
-    // Change donation status
-    donation.status = "Requested";
-
-    await donation.save();
+    // Both operations succeeded
+    await session.commitTransaction();
 
     res.status(201).json({
       message: "Pickup request created successfully",
-      pickupRequest,
+      pickupRequest: pickupRequest[0],
       donation,
     });
   } catch (error) {
+    // If anything fails, undo the donation status change
+    // and any other changes made in this transaction
+    await session.abortTransaction();
+
     console.error("Create pickup request error:", error);
 
     res.status(500).json({
       message: "Server error",
       error: error.message,
     });
+  } finally {
+    session.endSession();
   }
 };
 
@@ -98,15 +110,49 @@ const createPickupRequest = async (req, res) => {
 // ==========================================
 const getAllPickupRequests = async (req, res) => {
   try {
-    const pickupRequests = await PickupRequest.find();
+    let pickupRequests;
+
+    // Admin can see all pickup requests
+    if (req.user.role === "Admin") {
+      pickupRequests = await PickupRequest.find();
+    }
+
+    // NGO can see only its own requests
+    else if (req.user.role === "NGO") {
+      pickupRequests = await PickupRequest.find({
+        ngo_id: req.user.user_id
+      });
+    }
+
+    // Donor can see requests for their own donations
+    else if (req.user.role === "Donor") {
+      const donations = await Donation.find({
+        donor_id: req.user.user_id
+      }).select("donation_id");
+
+      const donationIds = donations.map(
+        donation => donation.donation_id
+      );
+
+      pickupRequests = await PickupRequest.find({
+        donation_id: { $in: donationIds }
+      });
+    }
+
+    else {
+      return res.status(403).json({
+        message: "Access denied"
+      });
+    }
 
     res.status(200).json(pickupRequests);
+
   } catch (error) {
     console.error("Get pickup requests error:", error);
 
     res.status(500).json({
       message: "Server error",
-      error: error.message,
+      error: error.message
     });
   }
 };

@@ -11,7 +11,9 @@ const {
   deleteUser,
   getPendingNGOs,
   approveNGO,
-  rejectNGO
+  rejectNGO,
+  suspendUser,
+  reactivateUser
 } = require("../controllers/userController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -23,7 +25,9 @@ const { validate } = require("../middleware/validationMiddleware");
 const {
   validateRegisterUser,
   validateLoginUser,
+  validateUpdateUser
 } = require("../validators/userValidator");
+
 
 // ==========================================
 // AUTH
@@ -67,8 +71,23 @@ router.put(
 
 router.get("/:user_id", protect, getUserById);
 
-router.put("/:user_id", protect, updateUser);
+router.put("/:user_id", protect, validate(validateUpdateUser),updateUser);
 
-router.delete("/:user_id", protect, authorizeRoles("Admin"), deleteUser);
+router.delete("/:user_id", protect, deleteUser);
+
+router.put(
+    "/admin/users/:user_id/suspend",
+    protect,
+    authorizeRoles("Admin"),
+    suspendUser
+);
+
+router.put(
+    "/admin/users/:user_id/reactivate",
+    protect,
+    authorizeRoles("Admin"),
+    reactivateUser
+);
+
 
 module.exports = router;

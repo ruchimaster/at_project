@@ -71,7 +71,69 @@ const validateLoginUser = (req) => {
   return errors;
 };
 
+const validateUpdateUser = (req) => {
+  const errors = [];
+
+  const {
+    organization_name,
+    organization_type,
+    contact_person,
+    email,
+    phone,
+    address,
+    password
+  } = req.body;
+
+  if (
+    organization_name !== undefined &&
+    !organization_name?.trim()
+  ) {
+    errors.push("Organization name cannot be empty");
+  }
+
+  if (
+    organization_type !== undefined &&
+    !["Restaurant", "Hotel", "Caterer", "NGO", "Other"].includes(
+      organization_type
+    )
+  ) {
+    errors.push("Invalid organization type");
+  }
+
+  if (
+    contact_person !== undefined &&
+    !contact_person?.trim()
+  ) {
+    errors.push("Contact person cannot be empty");
+  }
+
+  if (email !== undefined) {
+    if (!email.trim()) {
+      errors.push("Email cannot be empty");
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.push("Invalid email format");
+    }
+  }
+
+  if (phone !== undefined) {
+    if (!/^[0-9]{10}$/.test(phone)) {
+      errors.push("Phone number must contain exactly 10 digits");
+    }
+  }
+
+  if (address !== undefined && !address?.trim()) {
+    errors.push("Address cannot be empty");
+  }
+
+  if (password !== undefined && password.length < 6) {
+    errors.push("Password must contain at least 6 characters");
+  }
+
+  return errors;
+};
+
 module.exports = {
   validateRegisterUser,
   validateLoginUser,
+  validateUpdateUser,
 };

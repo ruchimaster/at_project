@@ -5,10 +5,9 @@ const Complaint = require("../models/complaints");
 // ==========================================
 const createComplaint = async (req, res) => {
   try {
-    const { user_id, complaint_type, description } = req.body;
+    const { complaint_type, description } = req.body;
 
-    // Check required fields
-    if (!user_id || !complaint_type || !description) {
+      if (!complaint_type || !description) {
       return res.status(400).json({
         message: "All required fields must be provided",
       });
@@ -32,10 +31,10 @@ const createComplaint = async (req, res) => {
     // Create complaint
     const complaint = await Complaint.create({
       complaint_id,
-      user_id,
+      user_id: req.user.user_id,
       complaint_type,
       description,
-    });
+});
 
     res.status(201).json({
       message: "Complaint created successfully",
@@ -81,6 +80,17 @@ const getComplaintById = async (req, res) => {
     if (!complaint) {
       return res.status(404).json({
         message: "Complaint not found",
+      });
+    }
+
+    // Admin can view any complaint
+    // Normal user can view only their own complaint
+    if (
+      req.user.role !== "Admin" &&
+      complaint.user_id !== req.user.user_id
+    ) {
+      return res.status(403).json({
+        message: "You are not authorized to view this complaint",
       });
     }
 

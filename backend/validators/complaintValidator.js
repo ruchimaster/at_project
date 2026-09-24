@@ -1,18 +1,14 @@
 const validateComplaint = (req) => {
   const errors = [];
 
-  const { title, description, category } = req.body;
+  const { complaint_type, description } = req.body;
 
-  if (!title?.trim()) {
-    errors.push("Complaint title is required");
+  if (!complaint_type?.trim()) {
+    errors.push("Complaint type is required");
   }
 
   if (!description?.trim()) {
     errors.push("Complaint description is required");
-  }
-
-  if (!category?.trim()) {
-    errors.push("Complaint category is required");
   }
 
   return errors;

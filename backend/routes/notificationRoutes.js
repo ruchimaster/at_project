@@ -8,6 +8,7 @@ const {
   getNotificationById,
   updateNotification,
   deleteNotification,
+  updateNotificationStatus
 } = require("../controllers/notificationController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -20,8 +21,24 @@ router.get("/", protect, getAllNotifications);
 
 router.get("/:notification_id", protect, getNotificationById);
 
-router.put("/:notification_id", protect, updateNotification);
+router.put(
+  "/:notification_id",
+  protect,
+  authorizeRoles("Admin"),
+  updateNotification
+);
 
-router.delete("/:notification_id", protect, deleteNotification);
+router.delete(
+  "/:notification_id",
+  protect,
+  authorizeRoles("Admin"),
+  deleteNotification
+);
+
+router.patch(
+  "/:notification_id/status",
+  protect,
+  updateNotificationStatus
+);
 
 module.exports = router;

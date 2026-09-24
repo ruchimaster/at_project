@@ -239,6 +239,17 @@ const getUserById = async (req, res) => {
             });
         }
 
+        // Admin can view any user
+        // Normal user can view only their own profile
+        if (
+            req.user.role !== "Admin" &&
+            req.user.user_id !== user.user_id
+        ) {
+            return res.status(403).json({
+                message: "You are not authorized to view this user"
+            });
+        }
+
         res.status(200).json(user);
 
     } catch (error) {
@@ -255,6 +266,9 @@ const getUserById = async (req, res) => {
 // ==========================================
 // UPDATE USER
 // ==========================================
+// ==========================================
+// UPDATE USER
+// ==========================================
 const updateUser = async (req, res) => {
     try {
         const user = await User.findOne({
@@ -264,6 +278,16 @@ const updateUser = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 message: "User not found"
+            });
+        }
+
+        // Normal user can update only their own account
+        if (
+            req.user.role !== "Admin" &&
+            req.user.user_id !== req.params.user_id
+        ) {
+            return res.status(403).json({
+                message: "You are not authorized to update this user"
             });
         }
 
@@ -277,32 +301,120 @@ const updateUser = async (req, res) => {
             password
         } = req.body;
 
+        // Validate organization name
         if (organization_name !== undefined) {
-            user.organization_name = organization_name;
+            if (
+                typeof organization_name !== "string" ||
+                !organization_name.trim()
+            ) {
+                return res.status(400).json({
+                    message: "Organization name cannot be empty"
+                });
+            }
+
+            user.organization_name = organization_name.trim();
         }
 
+        // Validate organization type
         if (organization_type !== undefined) {
-            user.organization_type = organization_type;
+            if (
+                typeof organization_type !== "string" ||
+                !organization_type.trim()
+            ) {
+                return res.status(400).json({
+                    message: "Organization type cannot be empty"
+                });
+            }
+
+            user.organization_type = organization_type.trim();
         }
 
+        // Validate contact person
         if (contact_person !== undefined) {
-            user.contact_person = contact_person;
+            if (
+                typeof contact_person !== "string" ||
+                !contact_person.trim()
+            ) {
+                return res.status(400).json({
+                    message: "Contact person cannot be empty"
+                });
+            }
+
+            user.contact_person = contact_person.trim();
         }
 
+        // Validate email
         if (email !== undefined) {
-            user.email = email;
+            if (typeof email !== "string") {
+                return res.status(400).json({
+                    message: "Invalid email"
+                });
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailRegex.test(email.trim())) {
+                return res.status(400).json({
+                    message: "Invalid email format"
+                });
+            }
+
+            const normalizedEmail = email.trim().toLowerCase();
+
+            // Check if email belongs to another user
+            const existingUser = await User.findOne({
+                email: normalizedEmail,
+                user_id: { $ne: user.user_id }
+            });
+
+            if (existingUser) {
+                return res.status(409).json({
+                    message: "Email already registered"
+                });
+            }
+
+            user.email = normalizedEmail;
         }
 
+        // Validate phone
         if (phone !== undefined) {
+            if (
+                typeof phone !== "string" ||
+                !/^\d{10}$/.test(phone)
+            ) {
+                return res.status(400).json({
+                    message: "Phone must contain exactly 10 digits"
+                });
+            }
+
             user.phone = phone;
         }
 
+        // Validate address
         if (address !== undefined) {
-            user.address = address;
+            if (
+                typeof address !== "string" ||
+                !address.trim()
+            ) {
+                return res.status(400).json({
+                    message: "Address cannot be empty"
+                });
+            }
+
+            user.address = address.trim();
         }
 
-        // Hash new password
+        // Validate and hash password
         if (password !== undefined) {
+            if (
+                typeof password !== "string" ||
+                password.length < 6
+            ) {
+                return res.status(400).json({
+                    message: "Password must be at least 6 characters long"
+                });
+            }
+
             user.password = await bcrypt.hash(password, 10);
         }
 
@@ -340,7 +452,7 @@ const updateUser = async (req, res) => {
 // ==========================================
 const deleteUser = async (req, res) => {
     try {
-        const user = await User.findOneAndDelete({
+        const user = await User.findOne({
             user_id: req.params.user_id
         });
 
@@ -349,6 +461,20 @@ const deleteUser = async (req, res) => {
                 message: "User not found"
             });
         }
+
+        // Normal user can delete only their own account
+        if (
+            req.user.role !== "Admin" &&
+            req.user.user_id !== user.user_id
+        ) {
+            return res.status(403).json({
+                message: "You are not authorized to delete this user"
+            });
+        }
+
+        await User.deleteOne({
+            user_id: req.params.user_id
+        });
 
         res.status(200).json({
             message: "User deleted successfully"
@@ -496,6 +622,115 @@ const rejectNGO = async (req, res) => {
 };
 
 // ==========================================
+// SUSPEND USER
+// ==========================================
+const suspendUser = async (req, res) => {
+    try {
+        const user = await User.findOne({
+            user_id: req.params.user_id
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        // Admin account cannot be suspended
+        if (user.role === "Admin") {
+            return res.status(403).json({
+                message: "Admin account cannot be suspended"
+            });
+        }
+
+        // Already suspended
+        if (user.account_status === "Suspended") {
+            return res.status(400).json({
+                message: "User is already suspended"
+            });
+        }
+
+        user.account_status = "Suspended";
+
+        await user.save();
+
+        res.status(200).json({
+            message: "User suspended successfully",
+            user: {
+                user_id: user.user_id,
+                organization_name: user.organization_name,
+                email: user.email,
+                role: user.role,
+                account_status: user.account_status
+            }
+        });
+
+    } catch (error) {
+        console.error("Suspend user error:", error);
+
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
+
+// ==========================================
+// REACTIVATE USER
+// ==========================================
+const reactivateUser = async (req, res) => {
+    try {
+        const user = await User.findOne({
+            user_id: req.params.user_id
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        // Admin account is already active
+        if (user.role === "Admin") {
+            return res.status(400).json({
+                message: "Admin account is already active"
+            });
+        }
+
+        // User must currently be suspended
+        if (user.account_status !== "Suspended") {
+            return res.status(400).json({
+                message: `User account is currently ${user.account_status}`
+            });
+        }
+
+        user.account_status = "Active";
+
+        await user.save();
+
+        res.status(200).json({
+            message: "User reactivated successfully",
+            user: {
+                user_id: user.user_id,
+                organization_name: user.organization_name,
+                email: user.email,
+                role: user.role,
+                account_status: user.account_status
+            }
+        });
+
+    } catch (error) {
+        console.error("Reactivate user error:", error);
+
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
+
+
+// ==========================================
 // EXPORT CONTROLLERS
 // ==========================================
 module.exports = {
@@ -507,5 +742,7 @@ module.exports = {
     deleteUser,
     getPendingNGOs,
     approveNGO,
-    rejectNGO
+    rejectNGO,
+    suspendUser,
+    reactivateUser
 };

@@ -28,7 +28,7 @@ router.post(
   createPickupRequest,
 );
 
-router.get("/", protect, authorizeRoles("Admin"), getAllPickupRequests);
+router.get("/", protect, getAllPickupRequests);
 
 router.get("/:request_id", protect, getPickupRequestById);
 

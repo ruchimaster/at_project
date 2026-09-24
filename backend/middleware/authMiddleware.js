@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/users");
 
 // ==========================================
 // AUTHENTICATION MIDDLEWARE
 // ==========================================
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
 
@@ -29,11 +30,33 @@ const protect = (req, res, next) => {
         // Verify JWT
         const decoded = jwt.verify(
             token,
-process.env.JWT_SECRET
+            process.env.JWT_SECRET
         );
 
-        // Store decoded user information
-        req.user = decoded;
+        // Find current user in database
+        const user = await User.findOne({
+            user_id: decoded.user_id
+        }).select("-password");
+
+        if (!user) {
+            return res.status(401).json({
+                message: "User not found."
+            });
+        }
+
+        // Check current account status
+        if (user.account_status !== "Active") {
+            return res.status(403).json({
+                message: `Your account is ${user.account_status.toLowerCase()}`
+            });
+        }
+
+        // Store current user information
+        req.user = {
+            user_id: user.user_id,
+            role: user.role,
+            account_status: user.account_status
+        };
 
         next();
 
