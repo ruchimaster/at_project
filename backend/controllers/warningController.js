@@ -1,7 +1,7 @@
 const Warning = require("../models/warnings");
 const User = require("../models/users");
 const Complaint = require("../models/complaints");
-
+const { createNotification } = require("../utils/notificationHelper");
 
 // ==========================================
 // CREATE WARNING
@@ -83,6 +83,13 @@ const createWarning = async (req, res) => {
      action_taken: action_taken || "Warning Issued",
    });
 
+   await createNotification(
+    user_id,
+    `You have received a warning from the administrator. ${
+      action_taken || ""
+    }`,
+    "Warning"
+  );
 
    res.status(201).json({
      message: "Warning created successfully",

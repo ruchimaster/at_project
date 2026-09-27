@@ -1,5 +1,6 @@
 const Complaint = require("../models/complaints");
-
+const User = require("../models/users");
+const { createNotification } = require("../utils/notificationHelper");
 // ==========================================
 // CREATE COMPLAINT
 // ==========================================
@@ -35,6 +36,18 @@ const createComplaint = async (req, res) => {
       complaint_type,
       description,
 });
+
+    const admins = await User.find({
+      role: "Admin",
+    });
+
+    for (const admin of admins) {
+      await createNotification(
+        admin.user_id,
+        `New complaint ${complaint_id} has been submitted.`,
+        "Complaint"
+      );
+    }
 
     res.status(201).json({
       message: "Complaint created successfully",

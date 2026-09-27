@@ -1,7 +1,7 @@
 const User = require("../models/users");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const { createNotification } = require("../utils/notificationHelper");
 // ==========================================
 // REGISTER USER
 // ==========================================
@@ -548,6 +548,12 @@ const approveNGO = async (req, res) => {
 
         await ngo.save();
 
+        await createNotification(
+        ngo.user_id,
+        "Your NGO account has been approved.",
+        "Account"
+    );
+
         res.status(200).json({
             message: "NGO approved successfully",
             ngo: {
@@ -599,6 +605,12 @@ const rejectNGO = async (req, res) => {
         ngo.account_status = "Rejected";
 
         await ngo.save();
+
+        await createNotification(
+        ngo.user_id,
+        "Your NGO account application has been rejected.",
+        "Account"
+    );
 
         res.status(200).json({
             message: "NGO rejected successfully",
@@ -654,6 +666,12 @@ const suspendUser = async (req, res) => {
 
         await user.save();
 
+        await createNotification(
+        user.user_id,
+        "Your account has been suspended by the administrator.",
+        "Account"
+    );
+
         res.status(200).json({
             message: "User suspended successfully",
             user: {
@@ -707,6 +725,12 @@ const reactivateUser = async (req, res) => {
         user.account_status = "Active";
 
         await user.save();
+
+        await createNotification(
+            user.user_id,
+            "Your account has been reactivated.",
+            "Account"
+        );
 
         res.status(200).json({
             message: "User reactivated successfully",

@@ -1,5 +1,6 @@
 const Notification = require("../models/notifications");
 const User = require("../models/users");
+const { createNotification: createNotificationHelper } = require("../utils/notificationHelper");
 
 // ==========================================
 // CREATE NOTIFICATION
@@ -29,27 +30,12 @@ const createNotification = async (req, res) => {
             });
         }
 
-        // Generate readable Notification ID
-        const lastNotification = await Notification.findOne().sort({
-            notification_id: -1
-        });
-
-        let notification_id = "NOT001";
-
-        if (lastNotification && lastNotification.notification_id) {
-            const lastNumber = parseInt(
-                lastNotification.notification_id.replace("NOT", "")
-            );
-
-            notification_id = `NOT${String(lastNumber + 1).padStart(3, "0")}`;
-        }
-
-        const notification = await Notification.create({
-            notification_id,
-            user_id,
-            message,
-            type
-        });
+        // Generate readable Notification 
+        const notification = await createNotificationHelper(
+        user_id,
+        message,
+        type
+    );
 
         res.status(201).json({
             message: "Notification created successfully",
@@ -68,22 +54,15 @@ const createNotification = async (req, res) => {
 
 
 
+
 // ==========================================
 // GET ALL NOTIFICATIONS
 // ==========================================
 const getAllNotifications = async (req, res) => {
   try {
-    let notifications;
-
-    if (req.user.role === "Admin") {
-      // Admin can see all notifications
-      notifications = await Notification.find();
-    } else {
-      // Normal user can see only their own notifications
-      notifications = await Notification.find({
-        user_id: req.user.user_id,
-      });
-    }
+    const notifications = await Notification.find({
+      user_id: req.user.user_id,
+    }).sort({ created_at: -1 });
 
     res.status(200).json(notifications);
   } catch (error) {
@@ -114,13 +93,11 @@ const getNotificationById = async (req, res) => {
 
     // Admin can view any notification
     // Normal user can view only their own notification
-    if (
-      req.user.role !== "Admin" &&
-      notification.user_id !== req.user.user_id
-    ) {
-      return res.status(403).json({
-        message: "You are not authorized to view this notification",
-      });
+    // Every user can view only their own notification
+    if (notification.user_id !== req.user.user_id) {
+        return res.status(403).json({
+            message: "You are not authorized to view this notification",
+        });
     }
 
     res.status(200).json(notification);

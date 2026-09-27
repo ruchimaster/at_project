@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const PickupRequest = require("../models/pickupRequests");
 const Donation = require("../models/donations");
-
+const { createNotification } = require("../utils/notificationHelper");
 // ==========================================
 // CREATE PICKUP REQUEST
 // NGO creates a request for an Available donation
@@ -82,6 +82,12 @@ const createPickupRequest = async (req, res) => {
 
     // Both operations succeeded
     await session.commitTransaction();
+
+    await createNotification(
+      donation.donor_id,
+      "An NGO has requested your donation.",
+      "Pickup Request"
+    );
 
     res.status(201).json({
       message: "Pickup request created successfully",
@@ -360,8 +366,40 @@ const updatePickupRequest = async (req, res) => {
       });
     }
 
-    await pickupRequest.save();
-    await donation.save();
+   await pickupRequest.save();
+   await donation.save();
+
+    if (req.user.role === "Donor" && request_status === "Accepted") {
+      await createNotification(
+        pickupRequest.ngo_id,
+        "Your pickup request has been accepted.",
+        "Pickup Request"
+      );
+    }
+
+    if (req.user.role === "Donor" && request_status === "Rejected") {
+      await createNotification(
+        pickupRequest.ngo_id,
+        "Your pickup request has been rejected.",
+        "Pickup Request"
+      );
+    }
+
+    if (req.user.role === "NGO" && request_status === "Cancelled") {
+      await createNotification(
+        donation.donor_id,
+        "The NGO has cancelled the pickup request.",
+        "Pickup Request"
+      );
+    }
+
+    if (req.user.role === "NGO" && request_status === "Completed") {
+      await createNotification(
+        donation.donor_id,
+        "The pickup has been completed successfully.",
+        "Pickup Request"
+      );
+    }
 
     res.status(200).json({
       message: "Pickup request updated successfully",
