@@ -1,0 +1,387 @@
+/* =========================
+   GLOBAL
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7f6;
+  color: #222;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+/* =========================
+   MAIN APP LAYOUT
+========================= */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: #1f5d42;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 24px 16px;
+}
+
+.brand {
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 35px;
+  padding-left: 10px;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nav-item {
+  display: block;
+  padding: 12px 14px;
+
+  color: white;
+  text-decoration: none;
+
+  border-radius: 7px;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.nav-item.active {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: bold;
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+.logout {
+  margin-top: auto;
+
+  width: 100%;
+  padding: 12px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: white;
+  color: #1f5d42;
+
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout:hover {
+  background: #f0f0f0;
+}
+
+
+/* =========================
+   MAIN AREA
+========================= */
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+}
+
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar {
+  height: 75px;
+
+  background: white;
+  border-bottom: 1px solid #ddd;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 30px;
+}
+
+.topbar strong {
+  display: block;
+  font-size: 17px;
+}
+
+.role-text {
+  display: block;
+  margin-top: 4px;
+
+  font-size: 13px;
+  color: #777;
+}
+
+
+/* =========================
+   PROFILE BUTTON
+========================= */
+
+.profile-button {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #eef4f0;
+
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.profile-button:hover {
+  background: #dfeae4;
+}
+
+
+/* =========================
+   PAGE CONTENT
+========================= */
+
+.content {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+/* =========================
+   PAGE TITLE
+========================= */
+
+.page-title {
+  margin-bottom: 25px;
+}
+
+.page-title h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.page-title p {
+  margin-top: 8px;
+  color: #666;
+}
+
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.toolbar {
+  margin-bottom: 25px;
+}
+
+.primary {
+  background: #1f5d42;
+  color: white;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 11px 18px;
+
+  border-radius: 7px;
+  text-decoration: none;
+
+  font-weight: bold;
+}
+
+.button-link:hover {
+  opacity: 0.9;
+}
+
+
+/* =========================
+   DONATION CARDS
+========================= */
+
+.cards-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(280px, 1fr));
+
+  gap: 20px;
+}
+
+.card {
+  background: white;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  padding: 22px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.card p {
+  margin: 9px 0;
+  line-height: 1.5;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status {
+  display: inline-block;
+
+  margin-top: 8px;
+  padding: 5px 10px;
+
+  border-radius: 20px;
+
+  background: #e8f3ec;
+  color: #1f5d42;
+
+  font-size: 13px;
+  font-weight: bold;
+}
+
+
+/* =========================
+   BUTTON ROW
+========================= */
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.button-row a,
+.button-row button {
+  padding: 8px 12px;
+
+  border-radius: 6px;
+
+  border: 1px solid #ccc;
+
+  background: white;
+
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button-row a:hover,
+.button-row button:hover {
+  background: #f2f2f2;
+}
+
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.empty {
+  background: white;
+  border: 1px dashed #ccc;
+  border-radius: 10px;
+
+  padding: 40px;
+  text-align: center;
+
+  color: #777;
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+.error-box {
+  background: #fff0f0;
+  border: 1px solid #e0aaaa;
+
+  color: #a33;
+
+  padding: 12px 15px;
+  border-radius: 7px;
+
+  margin-bottom: 20px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+  .sidebar {
+    width: 210px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  .topbar {
+    padding: 0 20px;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .sidebar {
+    width: 180px;
+    padding: 18px 10px;
+  }
+
+  .brand {
+    font-size: 20px;
+  }
+
+  .nav-item {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .content {
+    padding: 15px;
+  }
+
+}

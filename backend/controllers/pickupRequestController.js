@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const PickupRequest = require("../models/pickupRequests");
 const Donation = require("../models/donations");
+const User = require("../models/users");
 const { createNotification } = require("../utils/notificationHelper");
 // ==========================================
 // CREATE PICKUP REQUEST
@@ -120,45 +121,143 @@ const getAllPickupRequests = async (req, res) => {
 
     // Admin can see all pickup requests
     if (req.user.role === "Admin") {
-      pickupRequests = await PickupRequest.find();
+      pickupRequests = await PickupRequest.find().lean();
     }
 
     // NGO can see only its own requests
     else if (req.user.role === "NGO") {
       pickupRequests = await PickupRequest.find({
-        ngo_id: req.user.user_id
-      });
+        ngo_id: req.user.user_id,
+      }).lean();
     }
 
     // Donor can see requests for their own donations
     else if (req.user.role === "Donor") {
       const donations = await Donation.find({
-        donor_id: req.user.user_id
+        donor_id: req.user.user_id,
       }).select("donation_id");
 
       const donationIds = donations.map(
-        donation => donation.donation_id
+        (donation) => donation.donation_id
       );
 
       pickupRequests = await PickupRequest.find({
-        donation_id: { $in: donationIds }
-      });
+        donation_id: { $in: donationIds },
+      }).lean();
     }
 
     else {
       return res.status(403).json({
-        message: "Access denied"
+        message: "Access denied",
       });
     }
 
-    res.status(200).json(pickupRequests);
+    // ------------------------------------------
+    // Get related donation IDs
+    // ------------------------------------------
+
+    const donationIds = [
+      ...new Set(
+        pickupRequests.map((request) => request.donation_id)
+      ),
+    ];
+
+    // Get related NGO IDs
+    const ngoIds = [
+      ...new Set(
+        pickupRequests.map((request) => request.ngo_id)
+      ),
+    ];
+
+    // ------------------------------------------
+    // Get donations
+    // ------------------------------------------
+
+    const donations = await Donation.find({
+      donation_id: { $in: donationIds },
+    })
+      .select(
+        "donation_id food_name quantity pickup_address donor_id"
+      )
+      .lean();
+
+    // ------------------------------------------
+    // Get donor IDs
+    // ------------------------------------------
+
+    const donorIds = [
+      ...new Set(
+        donations.map((donation) => donation.donor_id)
+      ),
+    ];
+
+    // ------------------------------------------
+    // Get all related users
+    // ------------------------------------------
+
+    const userIds = [...new Set([...ngoIds, ...donorIds])];
+
+    const users = await User.find({
+      user_id: { $in: userIds },
+    })
+      .select("user_id organization_name")
+      .lean();
+
+    // ------------------------------------------
+    // Create lookup maps
+    // ------------------------------------------
+
+    const userMap = {};
+
+    users.forEach((user) => {
+      userMap[user.user_id] = user.organization_name;
+    });
+
+    const donationMap = {};
+
+    donations.forEach((donation) => {
+      donationMap[donation.donation_id] = donation;
+    });
+
+    // ------------------------------------------
+    // Add readable information
+    // ------------------------------------------
+
+    const enrichedRequests = pickupRequests.map((request) => {
+      const donation = donationMap[request.donation_id];
+
+      return {
+        ...request,
+
+        ngo: {
+          organization_name:
+            userMap[request.ngo_id] || "Unknown Organization",
+        },
+
+        donor: {
+          organization_name:
+            userMap[donation?.donor_id] ||
+            "Unknown Organization",
+        },
+
+        donation: donation
+          ? {
+              food_name: donation.food_name,
+              quantity: donation.quantity,
+              pickup_address: donation.pickup_address,
+            }
+          : null,
+      };
+    });
+
+    res.status(200).json(enrichedRequests);
 
   } catch (error) {
     console.error("Get pickup requests error:", error);
 
     res.status(500).json({
       message: "Server error",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -173,7 +272,7 @@ const getPickupRequestById = async (req, res) => {
   try {
     const pickupRequest = await PickupRequest.findOne({
       request_id: req.params.request_id,
-    });
+    }).lean();
 
     if (!pickupRequest) {
       return res.status(404).json({
@@ -181,46 +280,100 @@ const getPickupRequestById = async (req, res) => {
       });
     }
 
+    // Find related donation
+    const donation = await Donation.findOne({
+      donation_id: pickupRequest.donation_id,
+    })
+      .select(
+        "donation_id food_name quantity pickup_address donor_id"
+      )
+      .lean();
+
+    if (!donation) {
+      return res.status(404).json({
+        message: "Related donation not found",
+      });
+    }
+
+    // ------------------------------------------
+    // Authorization
+    // ------------------------------------------
+
     // Admin can view any request
     if (req.user.role === "Admin") {
-      return res.status(200).json(pickupRequest);
+      // allowed
     }
 
     // NGO can view only their own request
-    if (req.user.role === "NGO") {
+    else if (req.user.role === "NGO") {
       if (pickupRequest.ngo_id !== req.user.user_id) {
         return res.status(403).json({
-          message: "You are not authorized to view this pickup request",
+          message:
+            "You are not authorized to view this pickup request",
         });
       }
-
-      return res.status(200).json(pickupRequest);
     }
 
     // Donor can view requests belonging to their donation
-    if (req.user.role === "Donor") {
-      const donation = await Donation.findOne({
-        donation_id: pickupRequest.donation_id,
-      });
-
-      if (!donation) {
-        return res.status(404).json({
-          message: "Related donation not found",
-        });
-      }
-
+    else if (req.user.role === "Donor") {
       if (donation.donor_id !== req.user.user_id) {
         return res.status(403).json({
-          message: "You are not authorized to view this pickup request",
+          message:
+            "You are not authorized to view this pickup request",
         });
       }
-
-      return res.status(200).json(pickupRequest);
     }
 
-    return res.status(403).json({
-      message: "Access denied",
+    else {
+      return res.status(403).json({
+        message: "Access denied",
+      });
+    }
+
+    // ------------------------------------------
+    // Get donor and NGO information
+    // ------------------------------------------
+
+    const users = await User.find({
+      user_id: {
+        $in: [donation.donor_id, pickupRequest.ngo_id],
+      },
+    })
+      .select("user_id organization_name")
+      .lean();
+
+    const userMap = {};
+
+    users.forEach((user) => {
+      userMap[user.user_id] = user.organization_name;
     });
+
+    // ------------------------------------------
+    // Return enriched pickup request
+    // ------------------------------------------
+
+    const response = {
+      ...pickupRequest,
+
+      donor: {
+        organization_name:
+          userMap[donation.donor_id] || "Unknown Organization",
+      },
+
+      ngo: {
+        organization_name:
+          userMap[pickupRequest.ngo_id] || "Unknown Organization",
+      },
+
+      donation: {
+        food_name: donation.food_name,
+        quantity: donation.quantity,
+        pickup_address: donation.pickup_address,
+      },
+    };
+
+    res.status(200).json(response);
+
   } catch (error) {
     console.error("Get pickup request error:", error);
 

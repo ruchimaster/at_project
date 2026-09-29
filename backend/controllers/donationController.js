@@ -1,5 +1,5 @@
 const Donation = require("../models/donations");
-
+const User = require("../models/users");
 // ==========================================
 // CREATE DONATION
 // ==========================================
@@ -77,19 +77,19 @@ const getAllDonations = async (req, res) => {
     if (req.user.role === "Donor") {
       donations = await Donation.find({
         donor_id: req.user.user_id,
-      });
+      }).lean();
     }
 
     // NGO → see only available donations
     else if (req.user.role === "NGO") {
       donations = await Donation.find({
         status: "Available",
-      });
+      }).lean();
     }
 
     // Admin → see all donations
     else if (req.user.role === "Admin") {
-      donations = await Donation.find();
+      donations = await Donation.find().lean();
     }
 
     // Any other role
@@ -99,7 +99,37 @@ const getAllDonations = async (req, res) => {
       });
     }
 
-    res.status(200).json(donations);
+    // Get all unique donor IDs
+    const donorIds = [
+      ...new Set(donations.map((donation) => donation.donor_id)),
+    ];
+
+    // Get organization names of those donors
+    const donors = await User.find({
+      user_id: { $in: donorIds },
+    })
+      .select("user_id organization_name")
+      .lean();
+
+    // Create quick lookup:
+    // USR002 → ABC Restaurant
+    const donorMap = {};
+
+    donors.forEach((donor) => {
+      donorMap[donor.user_id] = donor.organization_name;
+    });
+
+    // Add donor organization name to every donation
+    const donationsWithDonor = donations.map((donation) => ({
+      ...donation,
+
+      donor: {
+        organization_name:
+          donorMap[donation.donor_id] || "Unknown Organization",
+      },
+    }));
+
+    res.status(200).json(donationsWithDonor);
   } catch (error) {
     console.error("Get donations error:", error);
 
