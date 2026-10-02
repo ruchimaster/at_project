@@ -1,0 +1,598 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  background: #f6f7f9;
+  color: #1f2937;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+/* =========================
+   APP LAYOUT
+========================= */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  width: 250px;
+
+  background: #17231b;
+  color: white;
+
+  padding: 22px 14px;
+
+  display: flex;
+  flex-direction: column;
+
+  position: fixed;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.brand {
+  font-size: 24px;
+  font-weight: 800;
+
+  padding: 0 12px 24px;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nav-item {
+  padding: 11px 13px;
+
+  border-radius: 9px;
+
+  text-decoration: none;
+
+  color: #d7e0d9;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: #304638;
+  color: white;
+}
+
+.logout {
+  margin-top: auto;
+
+  background: transparent;
+
+  border: 1px solid #65766b;
+
+  color: white;
+
+  padding: 10px;
+
+  border-radius: 9px;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main-area {
+  margin-left: 250px;
+
+  width: calc(100% - 250px);
+
+  min-height: 100vh;
+}
+
+.topbar {
+  height: 70px;
+
+  background: white;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 28px;
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 5;
+}
+
+.role-text {
+  display: block;
+
+  font-size: 12px;
+
+  color: #6b7280;
+
+  margin-top: 2px;
+}
+
+.profile-button {
+  width: 42px;
+  height: 42px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: #eef2ef;
+
+  font-size: 20px;
+}
+
+.content {
+  padding: 30px;
+
+  max-width: 1400px;
+
+  margin: auto;
+}
+
+/* =========================
+   TITLES
+========================= */
+
+.page-title {
+  margin-bottom: 24px;
+}
+
+.page-title h1 {
+  margin: 0 0 6px;
+
+  font-size: 30px;
+}
+
+.page-title p {
+  margin: 0;
+
+  color: #6b7280;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.panel,
+.card,
+.feature-card,
+.stat-card {
+  background: white;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 14px;
+
+  padding: 22px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.cards-grid,
+.dashboard-links,
+.stats-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+
+  gap: 18px;
+}
+
+.feature-card {
+  text-decoration: none;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stat-card span {
+  color: #6b7280;
+}
+
+.stat-card strong {
+  display: block;
+
+  font-size: 34px;
+
+  margin-top: 8px;
+}
+
+/* =========================
+   FORMS
+========================= */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.form-grid .full {
+  grid-column: 1 / -1;
+}
+
+label {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  font-weight: 600;
+
+  font-size: 14px;
+
+  margin-bottom: 16px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 8px;
+
+  padding: 11px;
+
+  background: white;
+}
+
+textarea {
+  min-height: 100px;
+
+  resize: vertical;
+}
+
+input:disabled,
+textarea:disabled {
+  background: #f3f4f6;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primary,
+.button-link {
+  background: #2f6b46 !important;
+
+  color: white !important;
+
+  border: 0;
+
+  padding: 10px 15px;
+
+  border-radius: 8px;
+
+  text-decoration: none;
+
+  display: inline-block;
+}
+
+.button-row {
+  display: flex;
+
+  gap: 10px;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  margin-top: 15px;
+}
+
+.button-row button,
+.button-row a {
+  border: 1px solid #d1d5db;
+
+  background: white;
+
+  padding: 9px 12px;
+
+  border-radius: 8px;
+
+  text-decoration: none;
+}
+
+.link-button {
+  border: 0;
+
+  background: transparent;
+
+  color: #2f6b46;
+
+  margin-top: 12px;
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.status {
+  display: inline-block;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  background: #eef2f0;
+
+  font-size: 12px;
+}
+
+/* =========================
+   MESSAGES
+========================= */
+
+.notice,
+.success-box,
+.error-box {
+  padding: 12px 14px;
+
+  border-radius: 9px;
+
+  margin-bottom: 16px;
+}
+
+.notice,
+.success-box {
+  background: #ecfdf3;
+
+  color: #166534;
+}
+
+.error-box {
+  background: #fef2f2;
+
+  color: #b91c1c;
+}
+
+.empty {
+  background: white;
+
+  border: 1px dashed #cfd5d0;
+
+  border-radius: 12px;
+
+  padding: 35px;
+
+  text-align: center;
+
+  color: #6b7280;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrap {
+  background: white;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 800px;
+}
+
+th,
+td {
+  text-align: left;
+
+  padding: 13px 14px;
+
+  border-bottom: 1px solid #eef0f2;
+
+  vertical-align: top;
+}
+
+th {
+  background: #f9fafb;
+
+  font-size: 13px;
+}
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+.notification {
+  background: white;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  padding: 16px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 12px;
+}
+
+.notification.unread {
+  border-left: 4px solid #2f6b46;
+}
+
+.notification p {
+  margin: 8px 0;
+}
+
+.notification small {
+  color: #6b7280;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-row {
+  margin-bottom: 18px;
+}
+
+.search-row input {
+  max-width: 600px;
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.auth-page {
+  min-height: 100vh;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 25px;
+
+  background: #f1f5f2;
+}
+
+.auth-card {
+  background: white;
+
+  width: min(440px, 100%);
+
+  padding: 32px;
+
+  border-radius: 16px;
+
+  border: 1px solid #e5e7eb;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.auth-card.wide {
+  width: min(760px, 100%);
+}
+
+.auth-card h1 {
+  margin-top: 0;
+}
+
+.pending-icon {
+  font-size: 44px;
+}
+
+.auth-card > button {
+  width: 100%;
+
+  margin-top: 10px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 800px) {
+  .sidebar {
+    width: 210px;
+  }
+
+  .main-area {
+    margin-left: 210px;
+
+    width: calc(100% - 210px);
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    position: static;
+
+    width: 100%;
+
+    min-height: auto;
+  }
+
+  .app-shell {
+    display: block;
+  }
+
+  .main-area {
+    margin-left: 0;
+
+    width: 100%;
+  }
+
+  .topbar {
+    position: static;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid .full {
+    grid-column: auto;
+  }
+}
