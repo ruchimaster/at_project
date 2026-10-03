@@ -3,22 +3,27 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 
-// ==================== AUTH ====================
-
+// AUTH
 import Login from "./pages/auth/login";
 import Register from "./pages/auth/Register";
 import PendingApproval from "./pages/auth/PendingApproval";
 
-// ==================== DONOR ====================
-
-import Dashboard from "./pages/donor/Dashboard";
+// DONOR
+import DonorDashboard from "./pages/donor/Dashboard";
 import DonationForm from "./pages/donor/DonationForm";
 import PastDonations from "./pages/donor/PastDonations";
-import PickupRequests from "./pages/donor/PickupRequests";
-import Notifications from "./pages/donor/Notifications";
+import DonorPickupRequests from "./pages/donor/PickupRequests";
+import DonorNotifications from "./pages/donor/Notifications";
 
-// ==================== ADMIN ====================
+// NGO
+import NgoDashboard from "./pages/ngo/Dashboard";
+import NgoPickups from "./pages/ngo/Pickups";
+import NgoNotifications from "./pages/ngo/Notifications";
+import NgoRequestDonation from "./pages/ngo/RequestDonation";
+import NgoComplaints from "./pages/ngo/Complaints";
+import PickupMap from "./pages/ngo/PickupMap";
 
+// ADMIN
 import AdminDashboard from "./pages/admin/Dashboard.jsx";
 import AdminUsers from "./pages/admin/Users.jsx";
 import PendingNGOs from "./pages/admin/PendingNGOs.jsx";
@@ -29,17 +34,14 @@ import AdminWarnings from "./pages/admin/Warnings.jsx";
 import AdminSendNotification from "./pages/admin/SendNotification.jsx";
 import AdminNotifications from "./pages/admin/Notifications.jsx";
 
-// ==================== COMMON ====================
-
+// COMMON
 import Complaint from "./pages/Complaint";
 import Profile from "./pages/Profile";
 
 function App() {
   return (
     <Routes>
-      {/* =====================================================
-          AUTHENTICATION
-      ===================================================== */}
+      {/* AUTH */}
 
       <Route path="/login" element={<Login />} />
 
@@ -47,9 +49,7 @@ function App() {
 
       <Route path="/pending-approval" element={<PendingApproval />} />
 
-      {/* =====================================================
-          DONOR ROUTES
-      ===================================================== */}
+      {/* DONOR */}
 
       <Route
         element={
@@ -58,24 +58,59 @@ function App() {
           </ProtectedRoute>
         }
       >
-        <Route path="/donor/dashboard" element={<Dashboard />} />
+        <Route path="/donor/dashboard" element={<DonorDashboard />} />
 
         <Route path="/donor/donation-form" element={<DonationForm />} />
 
         <Route path="/donor/past-donations" element={<PastDonations />} />
 
-        <Route path="/donor/pickup-requests" element={<PickupRequests />} />
+        <Route
+          path="/donor/pickup-requests"
+          element={<DonorPickupRequests />}
+        />
 
-        <Route path="/donor/notifications" element={<Notifications />} />
+        <Route
+          path="/donor/ongoing-pickup"
+          element={<DonorPickupRequests ongoing />}
+        />
+
+        <Route path="/donor/notifications" element={<DonorNotifications />} />
 
         <Route path="/donor/complaint" element={<Complaint />} />
 
         <Route path="/donor/profile" element={<Profile />} />
       </Route>
 
-      {/* =====================================================
-          ADMIN ROUTES
-      ===================================================== */}
+      {/* NGO */}
+
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["NGO"]}>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/ngo/dashboard" element={<NgoDashboard />} />
+
+        <Route path="/ngo/request-donation" element={<NgoRequestDonation />} />
+
+        <Route path="/ngo/current-pickups" element={<NgoPickups />} />
+
+        <Route
+          path="/ngo/completed-pickups"
+          element={<NgoPickups completed />}
+        />
+
+        <Route path="/ngo/pickup-map/:request_id" element={<PickupMap />} />
+
+        <Route path="/ngo/notifications" element={<NgoNotifications />} />
+
+        <Route path="/ngo/complaint" element={<NgoComplaints />} />
+
+        <Route path="/ngo/profile" element={<Profile />} />
+      </Route>
+
+      {/* ADMIN */}
 
       <Route
         element={
@@ -84,53 +119,31 @@ function App() {
           </ProtectedRoute>
         }
       >
-        {/* Admin Dashboard */}
-
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
-
-        {/* All Users */}
 
         <Route path="/admin/users" element={<AdminUsers />} />
 
-        {/* Pending NGO Approval */}
-
         <Route path="/admin/pending-ngos" element={<PendingNGOs />} />
-
-        {/* All Donations */}
 
         <Route path="/admin/donations" element={<AdminDonations />} />
 
-        {/* All Pickup Requests */}
-
         <Route path="/admin/pickups" element={<AdminPickups />} />
-
-        {/* Complaints */}
 
         <Route path="/admin/complaints" element={<AdminComplaints />} />
 
-        {/* Warnings */}
-
         <Route path="/admin/warnings" element={<AdminWarnings />} />
-
-        {/* Send Notification */}
 
         <Route
           path="/admin/send-notification"
           element={<AdminSendNotification />}
         />
 
-        {/* Admin Notifications */}
-
         <Route path="/admin/notifications" element={<AdminNotifications />} />
-
-        {/* Admin Profile */}
 
         <Route path="/admin/profile" element={<Profile />} />
       </Route>
 
-      {/* =====================================================
-          INVALID / UNKNOWN URL
-      ===================================================== */}
+      {/* FALLBACK */}
 
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

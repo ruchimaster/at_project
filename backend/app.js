@@ -27,6 +27,7 @@ const complaintRoutes = require("./routes/complaintRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const pickupRequestRoutes = require("./routes/pickupRequestRoutes");
 const warningRoutes = require("./routes/warningRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
 
 app.use("/api/users", userRoutes);
 app.use("/api/donations", donationRoutes);
@@ -34,6 +35,7 @@ app.use("/api/complaints", complaintRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/pickup-requests", pickupRequestRoutes);
 app.use("/api/warnings", warningRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 app.use(errorHandler);
 

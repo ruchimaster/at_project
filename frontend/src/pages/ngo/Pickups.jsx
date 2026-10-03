@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 
+import { Link } from "react-router-dom";
+
 import api from "../../api/api";
 
 import { Empty, ErrorBox, PageTitle } from "../../components/UI";
 
-import { formatDate, getErrorMessage, mapsUrl } from "../../utils/format";
+import { formatDate, getErrorMessage } from "../../utils/format";
 
 export default function Pickups({ completed = false }) {
   const [requests, setRequests] = useState([]);
-
   const [error, setError] = useState("");
 
   async function load() {
@@ -51,6 +52,11 @@ export default function Pickups({ completed = false }) {
         title={
           completed ? "Completed Pickup Requests" : "Current Pickup Requests"
         }
+        subtitle={
+          completed
+            ? "View your completed food pickups."
+            : "Manage your current food pickup requests."
+        }
       />
 
       <ErrorBox message={error} />
@@ -61,7 +67,7 @@ export default function Pickups({ completed = false }) {
         <div className="cards-grid">
           {requests.map((request) => (
             <div className="card" key={request.request_id}>
-              <h3>{request.donation?.food_name}</h3>
+              <h3>{request.donation?.food_name || "Food Donation"}</h3>
 
               <p>
                 <strong>Donor:</strong>{" "}
@@ -69,12 +75,17 @@ export default function Pickups({ completed = false }) {
               </p>
 
               <p>
-                <strong>Quantity:</strong> {request.donation?.quantity}
+                <strong>Quantity:</strong> {request.donation?.quantity || "-"}
               </p>
 
               <p>
                 <strong>Pickup address:</strong>{" "}
-                {request.donation?.pickup_address}
+                {request.donation?.pickup_address || "Address not available"}
+              </p>
+
+              <p>
+                <strong>NGO destination:</strong>{" "}
+                {request.ngo?.address || "Address not available"}
               </p>
 
               <p>
@@ -84,13 +95,11 @@ export default function Pickups({ completed = false }) {
               <span className="status">{request.request_status}</span>
 
               <div className="button-row">
-                <a
-                  href={mapsUrl(request.donation?.pickup_address)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Open in Google Maps
-                </a>
+                {request.donation?.pickup_address && request.ngo?.address && (
+                  <Link to={`/ngo/pickup-map/${request.request_id}`}>
+                    Open Map
+                  </Link>
+                )}
 
                 {!completed && (
                   <>
