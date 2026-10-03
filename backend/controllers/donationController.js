@@ -1,5 +1,6 @@
 const Donation = require("../models/donations");
 const User = require("../models/users");
+
 // ==========================================
 // CREATE DONATION
 // ==========================================
@@ -27,7 +28,7 @@ const createDonation = async (req, res) => {
     if (lastDonation && lastDonation.donation_id) {
       const lastNumber = parseInt(
         lastDonation.donation_id.replace("DON", ""),
-        10
+        10,
       );
 
       if (Number.isNaN(lastNumber)) {
@@ -64,8 +65,160 @@ const createDonation = async (req, res) => {
     });
   }
 };
+// ==========================================
+// GET RECOMMENDED DONATIONS FOR NGO
+// ==========================================
+const getRecommendedDonations = async (req, res) => {
+  try {
+    // Only available donations can be recommended
+    const donations = await Donation.find({
+      status: "Available",
+    }).lean();
 
+    // If no available donations exist
+    if (donations.length === 0) {
+      return res.status(200).json([]);
+    }
 
+    const now = new Date();
+
+    // Get all unique donor IDs
+    const donorIds = [
+      ...new Set(donations.map((donation) => donation.donor_id)),
+    ];
+
+    // Get donor organization names
+    const donors = await User.find({
+      user_id: { $in: donorIds },
+    })
+      .select("user_id organization_name")
+      .lean();
+
+    // Create donor lookup
+    const donorMap = {};
+
+    donors.forEach((donor) => {
+      donorMap[donor.user_id] = donor.organization_name;
+    });
+
+    const recommended = donations.map((donation) => {
+      const createdAt = new Date(donation.created_at);
+      const availableUntil = new Date(donation.available_until);
+
+      // ------------------------------------------
+      // TIME REMAINING
+      // ------------------------------------------
+      const millisecondsRemaining = availableUntil.getTime() - now.getTime();
+
+      const hoursRemaining = millisecondsRemaining / (1000 * 60 * 60);
+
+      // ------------------------------------------
+      // DONATION AGE
+      // ------------------------------------------
+      const ageHours = Math.max(
+        0,
+        (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60),
+      );
+
+      // ------------------------------------------
+      // EXPIRY SCORE
+      //
+      // Less time remaining = higher priority
+      // ------------------------------------------
+      let expiryScore = 0;
+
+      if (hoursRemaining <= 1) {
+        expiryScore = 50;
+      } else if (hoursRemaining <= 3) {
+        expiryScore = 45;
+      } else if (hoursRemaining <= 6) {
+        expiryScore = 38;
+      } else if (hoursRemaining <= 12) {
+        expiryScore = 30;
+      } else if (hoursRemaining <= 24) {
+        expiryScore = 20;
+      } else if (hoursRemaining <= 48) {
+        expiryScore = 10;
+      } else {
+        expiryScore = 5;
+      }
+
+      // ------------------------------------------
+      // AGE SCORE
+      //
+      // Older available donations get more priority
+      // ------------------------------------------
+      let ageScore = Math.min(20, Math.floor(ageHours * 2));
+
+      // ------------------------------------------
+      // QUANTITY SCORE
+      //
+      // Higher quantity gets some additional priority
+      // without dominating the score.
+      // ------------------------------------------
+      const numericQuantity = Number(donation.quantity) || 0;
+
+      let quantityScore = 0;
+
+      if (numericQuantity >= 50) {
+        quantityScore = 20;
+      } else if (numericQuantity >= 25) {
+        quantityScore = 15;
+      } else if (numericQuantity >= 10) {
+        quantityScore = 10;
+      } else if (numericQuantity >= 5) {
+        quantityScore = 5;
+      }
+
+      // ------------------------------------------
+      // FINAL RESCUE PRIORITY SCORE
+      // Maximum = 90 with current factors
+      // Normalize to 100.
+      // ------------------------------------------
+      const rawScore = expiryScore + ageScore + quantityScore;
+
+      const priorityScore = Math.min(100, Math.round((rawScore / 90) * 100));
+
+      // ------------------------------------------
+      // PRIORITY LEVEL
+      // ------------------------------------------
+      let priorityLevel = "Low";
+
+      if (priorityScore >= 75) {
+        priorityLevel = "High";
+      } else if (priorityScore >= 50) {
+        priorityLevel = "Medium";
+      }
+
+      return {
+        ...donation,
+
+        donor: {
+          organization_name:
+            donorMap[donation.donor_id] || "Unknown Organization",
+        },
+
+        priority_score: priorityScore,
+
+        priority_level: priorityLevel,
+
+        hours_remaining: Math.max(0, Number(hoursRemaining.toFixed(2))),
+      };
+    });
+
+    // Highest priority first
+    recommended.sort((a, b) => b.priority_score - a.priority_score);
+
+    res.status(200).json(recommended);
+  } catch (error) {
+    console.error("Get recommended donations error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
 // ==========================================
 // GET ALL DONATIONS
 // ==========================================
@@ -140,7 +293,6 @@ const getAllDonations = async (req, res) => {
   }
 };
 
-
 // ==========================================
 // GET DONATION BY ID
 // ==========================================
@@ -191,7 +343,6 @@ const getDonationById = async (req, res) => {
     });
   }
 };
-
 
 // ==========================================
 // UPDATE DONATION
@@ -277,10 +428,7 @@ const updateDonation = async (req, res) => {
 
     // Update pickup address
     if (pickup_address !== undefined) {
-      if (
-        typeof pickup_address !== "string" ||
-        !pickup_address.trim()
-      ) {
+      if (typeof pickup_address !== "string" || !pickup_address.trim()) {
         return res.status(400).json({
           message: "Pickup address cannot be empty",
         });
@@ -335,7 +483,6 @@ const updateDonation = async (req, res) => {
   }
 };
 
-
 // ==========================================
 // DELETE DONATION
 // ==========================================
@@ -383,13 +530,13 @@ const deleteDonation = async (req, res) => {
   }
 };
 
-
 // ==========================================
 // EXPORT CONTROLLERS
 // ==========================================
 module.exports = {
   createDonation,
   getAllDonations,
+  getRecommendedDonations,
   getDonationById,
   updateDonation,
   deleteDonation,

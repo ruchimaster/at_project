@@ -5,6 +5,7 @@ const router = express.Router();
 const {
   createDonation,
   getAllDonations,
+  getRecommendedDonations,
   getDonationById,
   updateDonation,
   deleteDonation,
@@ -28,6 +29,12 @@ router.post(
 
 router.get("/", protect, getAllDonations);
 
+router.get(
+  "/recommended",
+  protect,
+  authorizeRoles("NGO"),
+  getRecommendedDonations,
+);
 router.get("/:donation_id", protect, getDonationById);
 
 router.put("/:donation_id", protect, authorizeRoles("Donor"), updateDonation);

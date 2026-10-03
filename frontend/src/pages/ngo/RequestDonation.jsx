@@ -17,13 +17,9 @@ export default function RequestDonation() {
 
   async function load() {
     try {
-      const response = await api.get("/donations");
+      const response = await api.get("/donations/recommended");
 
-      const available = response.data
-        .filter((donation) => donation.status === "Available")
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-      setDonations(available);
+      setDonations(response.data);
     } catch (err) {
       setError(getErrorMessage(err));
     }
@@ -66,7 +62,7 @@ export default function RequestDonation() {
     <>
       <PageTitle
         title="Request Donation"
-        subtitle="Available donations are shown newest first."
+        subtitle="Donations are ranked using the Rescue Priority Score."
       />
 
       <div className="search-row">
@@ -105,6 +101,19 @@ export default function RequestDonation() {
               <p>
                 <strong>Available until:</strong>{" "}
                 {formatDate(donation.available_until)}
+              </p>
+
+              <p>
+                <strong>Rescue Priority:</strong> {donation.priority_score}/100
+              </p>
+
+              <p>
+                <strong>Priority Level:</strong> {donation.priority_level}
+              </p>
+
+              <p>
+                <strong>Time remaining:</strong> {donation.hours_remaining}{" "}
+                hours
               </p>
 
               <button
