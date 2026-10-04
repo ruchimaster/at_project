@@ -1,11 +1,6 @@
-import {
-  NavLink,
-  Outlet,
-  useNavigate,
-} from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
-
 const menus = {
   Donor: [
     ["Dashboard", "/donor/dashboard"],
@@ -45,8 +40,7 @@ export default function Layout() {
 
   const menu = menus[user.role] || [];
 
-  const profilePath =
-    `/${user.role.toLowerCase()}/profile`;
+  const profilePath = `/${user.role.toLowerCase()}/profile`;
 
   function handleLogout() {
     logout();
@@ -58,14 +52,10 @@ export default function Layout() {
 
   return (
     <div className="app-shell">
-
       {/* LEFT SIDEBAR */}
 
       <aside className="sidebar">
-
-        <div className="brand">
-          FoodRescue
-        </div>
+        <div className="brand">FoodRescue</div>
 
         <nav>
           {menu.map(([label, path]) => (
@@ -73,9 +63,7 @@ export default function Layout() {
               key={path}
               to={path}
               className={({ isActive }) =>
-                isActive
-                  ? "nav-item active"
-                  : "nav-item"
+                isActive ? "nav-item active" : "nav-item"
               }
             >
               {label}
@@ -83,29 +71,19 @@ export default function Layout() {
           ))}
         </nav>
 
-        <button
-          className="logout"
-          onClick={handleLogout}
-        >
+        <button className="logout" onClick={handleLogout}>
           Logout
         </button>
-
       </aside>
 
       {/* RIGHT SIDE */}
 
       <div className="main-area">
-
         <header className="topbar">
-
           <div>
-            <strong>
-              {user.organization_name}
-            </strong>
+            <strong>{user.organization_name}</strong>
 
-            <span className="role-text">
-              {user.role}
-            </span>
+            <span className="role-text">{user.role}</span>
           </div>
 
           <button
@@ -114,15 +92,12 @@ export default function Layout() {
           >
             👤
           </button>
-
         </header>
 
         <main className="content">
           <Outlet />
         </main>
-
       </div>
-
     </div>
   );
 }

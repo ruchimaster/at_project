@@ -1,27 +1,13 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "../context/AuthContext";
 
-import {
-  ErrorBox,
-  PageTitle,
-  SuccessBox,
-} from "../components/UI";
+import { ErrorBox, PageTitle, SuccessBox } from "../components/UI";
 
-import {
-  getErrorMessage,
-} from "../utils/format";
+import { getErrorMessage } from "../utils/format";
 
 export default function Profile() {
-
-  const {
-    user,
-    refreshProfile,
-    updateProfile,
-  } = useAuth();
+  const { user, refreshProfile, updateProfile } = useAuth();
 
   const [form, setForm] = useState({
     organization_name: "",
@@ -33,60 +19,46 @@ export default function Profile() {
     password: "",
   });
 
-  const [editing, setEditing] =
-    useState(false);
+  const [editing, setEditing] = useState(false);
 
-  const [error, setError] =
-    useState("");
+  const [error, setError] = useState("");
 
-  const [success, setSuccess] =
-    useState("");
+  const [success, setSuccess] = useState("");
+
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-
     refreshProfile()
       .then((u) => {
-
         setForm({
-          organization_name:
-            u.organization_name || "",
+          organization_name: u.organization_name || "",
 
-          organization_type:
-            u.organization_type || "",
+          organization_type: u.organization_type || "",
 
-          contact_person:
-            u.contact_person || "",
+          contact_person: u.contact_person || "",
 
-          email:
-            u.email || "",
+          email: u.email || "",
 
-          phone:
-            u.phone || "",
+          phone: u.phone || "",
 
-          address:
-            u.address || "",
+          address: u.address || "",
 
           password: "",
         });
-
       })
       .catch((err) => {
         setError(getErrorMessage(err));
       });
-
   }, []);
 
   function change(e) {
-
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
-
   }
 
   async function save(e) {
-
     e.preventDefault();
 
     setError("");
@@ -101,43 +73,73 @@ export default function Profile() {
     }
 
     try {
+      setSaving(true);
 
       await updateProfile(payload);
 
-      setSuccess(
-        "Profile updated successfully."
-      );
+      setSuccess("Profile updated successfully.");
+
+      setForm((current) => ({
+        ...current,
+        password: "",
+      }));
 
       setEditing(false);
-
     } catch (err) {
-
-      setError(
-        getErrorMessage(err)
-      );
-
+      setError(getErrorMessage(err));
+    } finally {
+      setSaving(false);
     }
   }
 
+  function cancelEdit() {
+    setEditing(false);
+    setError("");
+    setSuccess("");
+  }
+
   return (
-    <>
+    <div className="profile-page">
       <PageTitle
         title="My Profile"
-        subtitle="View and edit your organization details."
+        subtitle="View and manage your organization details."
       />
 
-      <div className="panel">
+      <section className="profile-card">
+        <div className="profile-card-header">
+          <div>
+            <span className="profile-eyebrow">ACCOUNT INFORMATION</span>
+
+            <h2>Organization Profile</h2>
+
+            <p>Keep your contact and organization information up to date.</p>
+          </div>
+
+          {!editing && (
+            <button
+              className="profile-edit-button"
+              type="button"
+              onClick={() => {
+                setError("");
+                setSuccess("");
+                setEditing(true);
+              }}
+            >
+              Edit Profile
+            </button>
+          )}
+        </div>
 
         <ErrorBox message={error} />
 
         <SuccessBox message={success} />
 
-        <form onSubmit={save}>
+        <form className="profile-form" onSubmit={save}>
+          <div className="profile-section-title">Organization Details</div>
 
-          <div className="form-grid">
-
+          <div className="profile-form-grid">
             <label>
-              Organization Name
+              <span>Organization Name</span>
 
               <input
                 name="organization_name"
@@ -148,7 +150,7 @@ export default function Profile() {
             </label>
 
             <label>
-              Organization Type
+              <span>Organization Type</span>
 
               <input
                 name="organization_type"
@@ -159,7 +161,7 @@ export default function Profile() {
             </label>
 
             <label>
-              Contact Person
+              <span>Contact Person</span>
 
               <input
                 name="contact_person"
@@ -170,7 +172,24 @@ export default function Profile() {
             </label>
 
             <label>
-              Email
+              <span>Phone</span>
+
+              <input
+                name="phone"
+                disabled={!editing}
+                value={form.phone}
+                onChange={change}
+              />
+            </label>
+          </div>
+
+          <div className="profile-section-title profile-account-title">
+            Account Details
+          </div>
+
+          <div className="profile-form-grid">
+            <label>
+              <span>Email</span>
 
               <input
                 type="email"
@@ -182,39 +201,14 @@ export default function Profile() {
             </label>
 
             <label>
-              Phone
+              <span>Role</span>
 
-              <input
-                name="phone"
-                disabled={!editing}
-                value={form.phone}
-                onChange={change}
-              />
-            </label>
-
-            <label>
-              Role
-
-              <input
-                value={user?.role || ""}
-                disabled
-              />
-            </label>
-
-            <label className="full">
-              Address
-
-              <textarea
-                name="address"
-                disabled={!editing}
-                value={form.address}
-                onChange={change}
-              />
+              <input value={user?.role || ""} disabled />
             </label>
 
             {editing && (
               <label>
-                New Password
+                <span>New Password</span>
 
                 <input
                   name="password"
@@ -227,43 +221,45 @@ export default function Profile() {
               </label>
             )}
 
+            <label className="profile-full">
+              <span>Address</span>
+
+              <textarea
+                name="address"
+                disabled={!editing}
+                value={form.address}
+                onChange={change}
+                rows="4"
+              />
+            </label>
           </div>
 
-          {editing ? (
+          {editing && (
+            <div className="profile-form-footer">
+              <span>Changes will be saved to your account.</span>
 
-            <div className="button-row">
+              <div className="profile-button-row">
+                <button
+                  type="button"
+                  className="profile-cancel-button"
+                  onClick={cancelEdit}
+                  disabled={saving}
+                >
+                  Cancel
+                </button>
 
-              <button
-                className="primary"
-                type="submit"
-              >
-                Save Changes
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setEditing(false)}
-              >
-                Cancel
-              </button>
-
+                <button
+                  className="primary profile-save-button"
+                  type="submit"
+                  disabled={saving}
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
             </div>
-
-          ) : (
-
-            <button
-              className="primary"
-              type="button"
-              onClick={() => setEditing(true)}
-            >
-              Edit Profile
-            </button>
-
           )}
-
         </form>
-
-      </div>
-    </>
+      </section>
+    </div>
   );
 }

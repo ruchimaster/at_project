@@ -1,0 +1,964 @@
+/* =========================================================
+   NGO DASHBOARD
+   FOODRESCUE
+   ========================================================= */
+
+.ngo-dashboard-page {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+
+  animation: ngoDashboardFade 0.4s ease both;
+}
+
+@keyframes ngoDashboardFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.ngo-dashboard-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 30px;
+}
+
+.ngo-dashboard-heading {
+  min-width: 0;
+}
+
+.ngo-dashboard-eyebrow {
+  margin-bottom: 7px;
+
+  color: #258761;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.ngo-dashboard-hero .page-title {
+  margin-bottom: 0;
+}
+
+.ngo-dashboard-hero .page-title h1 {
+  color: #102f24;
+
+  font-size: 32px;
+  font-weight: 800;
+
+  letter-spacing: -0.8px;
+}
+
+.ngo-dashboard-hero .page-title p {
+  max-width: 650px;
+
+  margin-top: 8px;
+
+  color: #607169;
+
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ngo-dashboard-request-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 10px;
+
+  flex-shrink: 0;
+
+  padding: 13px 19px;
+
+  border-radius: 9px;
+
+  background: #15563e;
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  box-shadow: 0 7px 18px rgba(21, 86, 62, 0.18);
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.ngo-dashboard-request-button:hover {
+  background: #103d2e;
+
+  color: #ffffff;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 24px rgba(21, 86, 62, 0.24);
+}
+
+.ngo-request-plus {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* =========================================================
+   ACCOUNT NOTICE
+   ========================================================= */
+
+.ngo-dashboard-notice {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+
+  margin-bottom: 30px;
+
+  padding: 16px 18px;
+
+  background: #edf8f1;
+
+  border: 1px solid #cfe5d7;
+
+  border-left: 4px solid #258761;
+
+  border-radius: 10px;
+}
+
+.ngo-notice-symbol {
+  width: 31px;
+  height: 31px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #d5ebdd;
+  color: #15563e;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.ngo-dashboard-notice strong {
+  display: block;
+
+  color: #164d38;
+
+  font-size: 13px;
+}
+
+.ngo-dashboard-notice p {
+  margin-top: 4px;
+
+  color: #587064;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.ngo-dashboard-section {
+  margin-bottom: 32px;
+}
+
+.ngo-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+.ngo-section-header span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #258761;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.3px;
+}
+
+.ngo-section-header h2 {
+  color: #19362a;
+
+  font-size: 20px;
+  font-weight: 800;
+
+  letter-spacing: -0.3px;
+}
+
+.ngo-section-header p {
+  color: #7b8983;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.ngo-statistics-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 15px;
+}
+
+.ngo-stat-box {
+  position: relative;
+
+  min-height: 156px;
+
+  padding: 20px;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #dfe8e2;
+
+  border-radius: 13px;
+
+  box-shadow: 0 3px 12px rgba(16, 61, 46, 0.045);
+}
+
+.ngo-stat-box::after {
+  content: "";
+
+  position: absolute;
+
+  right: -32px;
+  bottom: -38px;
+
+  width: 105px;
+  height: 105px;
+
+  border-radius: 50%;
+
+  background: #f1f7f3;
+}
+
+.ngo-stat-green {
+  border-top: 4px solid #258761;
+}
+
+.ngo-stat-orange {
+  border-top: 4px solid #e6a23c;
+}
+
+.ngo-stat-blue {
+  border-top: 4px solid #4385b8;
+}
+
+.ngo-stat-completed {
+  border-top: 4px solid #15563e;
+}
+
+.ngo-stat-red {
+  border-top: 4px solid #d65c5c;
+}
+
+.ngo-stat-purple {
+  border-top: 4px solid #8b6db0;
+}
+
+.ngo-stat-impact {
+  border-top: 4px solid #1c7654;
+
+  background: linear-gradient(135deg, #ffffff 0%, #f1f8f4 100%);
+}
+
+.ngo-stat-icon {
+  position: relative;
+  z-index: 1;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 13px;
+
+  border-radius: 9px;
+
+  background: #e9f3ed;
+
+  color: #15563e;
+
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.ngo-stat-orange .ngo-stat-icon {
+  background: #fff4df;
+  color: #a56c18;
+}
+
+.ngo-stat-blue .ngo-stat-icon {
+  background: #eaf3fa;
+  color: #3a6f99;
+}
+
+.ngo-stat-red .ngo-stat-icon {
+  background: #fff0f0;
+  color: #b64747;
+}
+
+.ngo-stat-purple .ngo-stat-icon {
+  background: #f3eef8;
+  color: #76589c;
+}
+
+.ngo-stat-label {
+  position: relative;
+  z-index: 1;
+
+  color: #65756e;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ngo-stat-number {
+  position: relative;
+  z-index: 1;
+
+  margin-top: 7px;
+
+  color: #102f24;
+
+  font-size: 34px;
+  line-height: 1;
+
+  font-weight: 850;
+
+  letter-spacing: -1px;
+}
+
+.ngo-stat-description {
+  position: relative;
+  z-index: 1;
+
+  margin-top: 8px;
+
+  color: #8a9690;
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   CHART GRID
+   ========================================================= */
+
+.ngo-chart-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.6fr)
+    minmax(340px, 0.9fr);
+
+  gap: 18px;
+}
+
+.ngo-chart-card {
+  min-height: 420px;
+
+  padding: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #dfe8e2;
+
+  border-radius: 13px;
+
+  box-shadow: 0 3px 12px rgba(16, 61, 46, 0.045);
+}
+
+.ngo-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 12px;
+}
+
+.ngo-chart-header h3 {
+  color: #1c342a;
+
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.ngo-chart-header p {
+  margin-top: 5px;
+
+  color: #7b8983;
+
+  font-size: 12px;
+}
+
+.ngo-chart-badge {
+  padding: 6px 10px;
+
+  border-radius: 20px;
+
+  background: #eaf4ed;
+
+  color: #286047;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.ngo-chart-area {
+  width: 100%;
+  height: 320px;
+}
+
+.ngo-chart-empty {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  text-align: center;
+}
+
+.ngo-chart-empty > div {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 10px;
+
+  border-radius: 50%;
+
+  background: #edf5f0;
+  color: #4f7664;
+
+  font-size: 20px;
+}
+
+.ngo-chart-empty strong {
+  color: #455950;
+
+  font-size: 13px;
+}
+
+.ngo-chart-empty p {
+  max-width: 250px;
+
+  margin-top: 6px;
+
+  color: #8a9791;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   DONUT
+   ========================================================= */
+
+.ngo-donut-wrapper {
+  position: relative;
+
+  width: 100%;
+  height: 275px;
+}
+
+.ngo-donut-center {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  pointer-events: none;
+}
+
+.ngo-donut-center strong {
+  color: #15372a;
+
+  font-size: 30px;
+  font-weight: 850;
+}
+
+.ngo-donut-center span {
+  margin-top: 2px;
+
+  color: #84928b;
+
+  font-size: 11px;
+}
+
+.ngo-chart-legend {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 9px 14px;
+
+  padding-top: 6px;
+}
+
+.ngo-legend-item {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #63736c;
+
+  font-size: 11px;
+}
+
+.ngo-legend-item strong {
+  margin-left: auto;
+
+  color: #263c31;
+
+  font-size: 11px;
+}
+
+.ngo-legend-dot {
+  width: 8px;
+  height: 8px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+}
+
+/* =========================================================
+   IMPACT + PERFORMANCE
+   ========================================================= */
+
+.ngo-bottom-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.4fr)
+    minmax(330px, 0.8fr);
+
+  gap: 18px;
+
+  margin-bottom: 32px;
+}
+
+.ngo-impact-card {
+  position: relative;
+
+  min-height: 225px;
+
+  padding: 28px;
+
+  overflow: hidden;
+
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #0d3b2c 0%, #15563e 55%, #1c7654 100%);
+
+  color: white;
+
+  box-shadow: 0 12px 30px rgba(16, 61, 46, 0.15);
+}
+
+.ngo-impact-content {
+  position: relative;
+  z-index: 2;
+
+  max-width: 580px;
+}
+
+.ngo-impact-label {
+  color: #b9ddc8;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.ngo-impact-card h2 {
+  margin-top: 8px;
+
+  color: #ffffff;
+
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.ngo-impact-card p {
+  max-width: 540px;
+
+  margin-top: 9px;
+
+  color: #d0e5d8;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+}
+
+.ngo-impact-number {
+  display: flex;
+  align-items: baseline;
+
+  gap: 9px;
+
+  margin-top: 19px;
+}
+
+.ngo-impact-number strong {
+  color: #ffffff;
+
+  font-size: 36px;
+  font-weight: 850;
+}
+
+.ngo-impact-number span {
+  color: #bcdaca;
+
+  font-size: 12px;
+}
+
+.ngo-impact-circle {
+  position: absolute;
+
+  right: -25px;
+  bottom: -45px;
+
+  width: 190px;
+  height: 190px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  color: rgba(255, 255, 255, 0.22);
+
+  font-size: 80px;
+}
+
+.ngo-performance-card {
+  min-height: 225px;
+
+  padding: 25px;
+
+  background: #ffffff;
+
+  border: 1px solid #dfe8e2;
+
+  border-radius: 14px;
+
+  box-shadow: 0 3px 12px rgba(16, 61, 46, 0.045);
+}
+
+.ngo-performance-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ngo-performance-heading span {
+  color: #258761;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.2px;
+}
+
+.ngo-performance-heading h3 {
+  margin-top: 5px;
+
+  color: #1c342a;
+
+  font-size: 17px;
+}
+
+.ngo-performance-heading > strong {
+  color: #15563e;
+
+  font-size: 31px;
+  font-weight: 850;
+}
+
+.ngo-performance-bar {
+  width: 100%;
+  height: 12px;
+
+  margin-top: 30px;
+
+  overflow: hidden;
+
+  border-radius: 20px;
+
+  background: #e9efeb;
+}
+
+.ngo-performance-bar div {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: linear-gradient(90deg, #258761, #1c7654);
+
+  transition: width 0.6s ease;
+}
+
+.ngo-performance-card p {
+  margin-top: 16px;
+
+  color: #74827c;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+}
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.ngo-actions-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 15px;
+}
+
+.ngo-action-card {
+  min-height: 135px;
+
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #dfe8e2;
+
+  border-radius: 12px;
+
+  text-decoration: none;
+
+  box-shadow: 0 3px 10px rgba(16, 61, 46, 0.035);
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.ngo-action-card:hover {
+  transform: translateY(-3px);
+
+  border-color: #bcd7c6;
+
+  box-shadow: 0 10px 25px rgba(16, 61, 46, 0.09);
+}
+
+.ngo-action-icon {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  background: #e7f2eb;
+
+  color: #15563e;
+
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.ngo-action-card h3 {
+  color: #263d32;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.ngo-action-card p {
+  max-width: 250px;
+
+  margin-top: 6px;
+
+  color: #7c8983;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+.ngo-action-arrow {
+  position: absolute;
+
+  right: 17px;
+  bottom: 16px;
+
+  color: #719084;
+
+  font-size: 18px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  .ngo-statistics-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ngo-chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-chart-wide {
+    min-height: 430px;
+  }
+}
+
+@media (max-width: 900px) {
+  .ngo-dashboard-hero {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .ngo-dashboard-request-button {
+    align-self: flex-start;
+  }
+
+  .ngo-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .ngo-statistics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ngo-dashboard-hero .page-title h1 {
+    font-size: 27px;
+  }
+
+  .ngo-section-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 5px;
+  }
+
+  .ngo-chart-card {
+    padding: 17px;
+  }
+}
+
+@media (max-width: 470px) {
+  .ngo-statistics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-stat-box {
+    min-height: 145px;
+  }
+
+  .ngo-stat-number {
+    font-size: 31px;
+  }
+
+  .ngo-dashboard-request-button {
+    width: 100%;
+
+    justify-content: center;
+  }
+
+  .ngo-chart-area {
+    height: 270px;
+  }
+
+  .ngo-donut-wrapper {
+    height: 240px;
+  }
+
+  .ngo-chart-legend {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-impact-card,
+  .ngo-performance-card {
+    padding: 20px;
+  }
+}

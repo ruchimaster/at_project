@@ -1,0 +1,760 @@
+/* =========================================================
+   PENDING NGOS
+   ========================================================= */
+
+.pending-ngos-page {
+  animation: pendingNgosPageEnter 0.45s ease both;
+}
+
+@keyframes pendingNgosPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.pending-ngos-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 28px;
+}
+
+.pending-ngos-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 9px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #e5f1eb;
+  color: #15563e;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.pending-ngos-header .page-title {
+  margin-bottom: 0;
+}
+
+.pending-ngos-header .page-title h1 {
+  font-size: 38px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.pending-ngos-header .page-title p {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #59675f;
+}
+
+.pending-ngos-count {
+  min-width: 190px;
+  padding: 18px 22px;
+  border: 1px solid #d8e7de;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #ffffff, #f2f8f4);
+  box-shadow: 0 10px 30px rgba(16, 61, 46, 0.08);
+  text-align: right;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.pending-ngos-count:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 38px rgba(16, 61, 46, 0.12);
+}
+
+.pending-ngos-count span {
+  display: block;
+  color: #59675f;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.pending-ngos-count strong {
+  display: block;
+  margin-top: 4px;
+  color: #15563e;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+/* =========================================================
+   OVERVIEW ALERT
+   ========================================================= */
+
+.pending-ngos-overview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding: 18px 20px;
+  border: 1px solid #f1d69b;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fffaf0, #fff7e5);
+  box-shadow: 0 8px 24px rgba(140, 94, 15, 0.07);
+}
+
+.pending-ngos-overview-icon {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #f4c95d;
+  color: #5c4100;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.pending-ngos-overview-content {
+  flex: 1;
+}
+
+.pending-ngos-overview-content strong {
+  display: block;
+  color: #5c4100;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.pending-ngos-overview-content p {
+  margin-top: 4px;
+  color: #765f2e;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.pending-ngos-overview-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: #fff0c7;
+  color: #765000;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.pending-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d08a00;
+  box-shadow: 0 0 0 4px rgba(208, 138, 0, 0.12);
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.pending-ngos-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 22px;
+  padding: 15px;
+  border: 1px solid #e0e6e2;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 7px 25px rgba(16, 61, 46, 0.05);
+}
+
+.pending-ngos-search {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 14px;
+  border: 1px solid #d4ddd8;
+  border-radius: 11px;
+  background: #fafcfb;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.pending-ngos-search:focus-within {
+  border-color: #258761;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 135, 97, 0.11);
+}
+
+.pending-ngos-search > span {
+  color: #258761;
+  font-size: 25px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.pending-ngos-search input {
+  min-height: 48px;
+  padding: 8px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #17211c;
+  font-size: 15px;
+}
+
+.pending-ngos-search input::placeholder {
+  color: #7b877f;
+}
+
+.pending-ngos-search input:focus {
+  box-shadow: none;
+}
+
+.pending-ngos-results {
+  padding: 0 7px;
+  color: #59675f;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.pending-ngos-results strong {
+  color: #15563e;
+  font-size: 15px;
+}
+
+/* =========================================================
+   NGO GRID
+   ========================================================= */
+
+.pending-ngos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
+  gap: 22px;
+}
+
+/* =========================================================
+   NGO CARD
+   ========================================================= */
+
+.pending-ngo-card {
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  border: 1px solid #dfe6e1;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(16, 61, 46, 0.06);
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+  animation: pendingNgoCardEnter 0.45s ease both;
+}
+
+.pending-ngo-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #258761, #f4c95d);
+}
+
+.pending-ngo-card:hover {
+  transform: translateY(-6px);
+  border-color: #c7d9cf;
+  box-shadow: 0 18px 45px rgba(16, 61, 46, 0.12);
+}
+
+@keyframes pendingNgoCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   CARD TOP
+   ========================================================= */
+
+.pending-ngo-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.pending-ngo-identity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.pending-ngo-avatar {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #15563e, #258761);
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(21, 86, 62, 0.2);
+}
+
+.pending-ngo-identity h2 {
+  overflow: hidden;
+  margin: 0;
+  color: #17211c;
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 800;
+  text-overflow: ellipsis;
+}
+
+.pending-ngo-id {
+  display: inline-block;
+  margin-top: 5px;
+  color: #7b877f;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.pending-ngo-badge {
+  flex-shrink: 0;
+  padding: 7px 10px;
+  border: 1px solid #f1d69b;
+  border-radius: 999px;
+  background: #fff8e7;
+  color: #8a6100;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+}
+
+/* =========================================================
+   ORGANIZATION TYPE
+   ========================================================= */
+
+.pending-ngo-type {
+  margin-bottom: 18px;
+  padding: 13px 15px;
+  border-radius: 12px;
+  background: #f3f8f5;
+  border: 1px solid #e0ebe4;
+}
+
+.pending-detail-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #7b877f;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.pending-ngo-type strong {
+  color: #15563e;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   DETAILS
+   ========================================================= */
+
+.pending-ngo-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-bottom: 22px;
+}
+
+.pending-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid #edf0ee;
+  border-radius: 12px;
+  background: #fcfdfc;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.pending-detail:hover {
+  background: #f7faf8;
+  border-color: #d9e5de;
+  transform: translateY(-2px);
+}
+
+.pending-detail-address {
+  grid-column: 1 / -1;
+}
+
+.pending-detail-icon {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #e5f1eb;
+  font-size: 13px;
+}
+
+.pending-detail div {
+  min-width: 0;
+}
+
+.pending-detail strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #27342d;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.pending-ngo-actions {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid #edf0ee;
+}
+
+.pending-ngo-actions button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.pending-ngo-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+.pending-reject-button {
+  border: 1px solid #f0caca;
+  background: #fff7f7;
+  color: #b42318;
+}
+
+.pending-reject-button:hover:not(:disabled) {
+  border-color: #e7a5a5;
+  background: #fff0f0;
+  box-shadow: 0 7px 18px rgba(180, 35, 24, 0.1);
+  transform: translateY(-2px);
+}
+
+.pending-approve-button {
+  border: 0;
+  background: linear-gradient(135deg, #15563e, #258761);
+  color: #ffffff;
+  box-shadow: 0 7px 18px rgba(37, 135, 97, 0.2);
+}
+
+.pending-approve-button:hover:not(:disabled) {
+  box-shadow: 0 12px 25px rgba(37, 135, 97, 0.28);
+  transform: translateY(-2px);
+}
+
+.pending-reject-button span,
+.pending-approve-button span {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.pending-ngos-loading {
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  border: 1px solid #e0e6e2;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(16, 61, 46, 0.05);
+  text-align: center;
+}
+
+.pending-ngos-spinner {
+  width: 45px;
+  height: 45px;
+  margin-bottom: 18px;
+  border: 4px solid #dce9e2;
+  border-top-color: #258761;
+  border-radius: 50%;
+  animation: pendingNgosSpin 0.8s linear infinite;
+}
+
+@keyframes pendingNgosSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pending-ngos-loading strong {
+  color: #17211c;
+  font-size: 18px;
+}
+
+.pending-ngos-loading p {
+  margin-top: 7px;
+  color: #7b877f;
+  font-size: 14px;
+}
+
+/* =========================================================
+   EMPTY / NO RESULTS
+   ========================================================= */
+
+.pending-ngos-empty,
+.pending-ngos-no-results {
+  padding: 55px 25px;
+  border: 1px solid #dfe6e1;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(16, 61, 46, 0.05);
+  text-align: center;
+}
+
+.pending-ngos-empty-icon,
+.pending-ngos-no-results-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.pending-ngos-empty-icon {
+  background: #e5f7ed;
+  color: #16834d;
+}
+
+.pending-ngos-no-results-icon {
+  background: #edf2ef;
+  color: #59675f;
+}
+
+.pending-ngos-empty h2,
+.pending-ngos-no-results h2 {
+  color: #17211c;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.pending-ngos-empty p,
+.pending-ngos-no-results p {
+  margin-top: 8px;
+  color: #6b7770;
+  font-size: 15px;
+}
+
+.pending-ngos-empty > .empty {
+  display: none;
+}
+
+.pending-ngos-no-results button {
+  margin-top: 20px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: #15563e;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.pending-ngos-no-results button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(21, 86, 62, 0.2);
+}
+
+/* =========================================================
+   BUTTON LOADING
+   ========================================================= */
+
+.pending-button-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(180, 35, 24, 0.2);
+  border-top-color: #b42318;
+  border-radius: 50%;
+  animation: pendingButtonSpin 0.7s linear infinite;
+}
+
+.pending-spinner-light {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+}
+
+@keyframes pendingButtonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+  .pending-ngos-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pending-ngos-count {
+    min-width: 170px;
+    text-align: left;
+  }
+
+  .pending-ngos-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .pending-ngos-header .page-title h1 {
+    font-size: 30px;
+  }
+
+  .pending-ngos-header .page-title p {
+    font-size: 14px;
+  }
+
+  .pending-ngos-overview {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .pending-ngos-overview-status {
+    margin-left: 64px;
+  }
+
+  .pending-ngos-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pending-ngos-results {
+    padding: 0 4px;
+  }
+
+  .pending-ngo-card {
+    padding: 19px;
+  }
+
+  .pending-ngo-card-top {
+    align-items: flex-start;
+  }
+
+  .pending-ngo-identity h2 {
+    font-size: 17px;
+  }
+
+  .pending-ngo-details {
+    grid-template-columns: 1fr;
+  }
+
+  .pending-detail-address {
+    grid-column: auto;
+  }
+
+  .pending-ngo-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .pending-ngos-count {
+    width: 100%;
+  }
+
+  .pending-ngos-overview {
+    padding: 15px;
+  }
+
+  .pending-ngos-overview-content strong {
+    font-size: 15px;
+  }
+
+  .pending-ngos-overview-status {
+    margin-left: 0;
+  }
+
+  .pending-ngo-card-top {
+    flex-direction: column;
+  }
+
+  .pending-ngo-badge {
+    align-self: flex-start;
+  }
+
+  .pending-ngo-avatar {
+    width: 50px;
+    height: 50px;
+    flex-basis: 50px;
+  }
+}

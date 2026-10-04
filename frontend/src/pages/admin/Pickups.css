@@ -1,0 +1,705 @@
+/* =========================================================
+   ADMIN PICKUPS
+   ========================================================= */
+
+.admin-pickups-page {
+  animation: adminPickupsEnter 0.45s ease both;
+}
+
+@keyframes adminPickupsEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.admin-pickups-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 28px;
+}
+
+.admin-pickups-eyebrow {
+  display: inline-flex;
+  margin-bottom: 9px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #e5f1eb;
+  color: #15563e;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.admin-pickups-header .page-title {
+  margin-bottom: 0;
+}
+
+.admin-pickups-header .page-title h1 {
+  font-size: 38px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.admin-pickups-header .page-title p {
+  margin-top: 8px;
+  color: #59675f;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.admin-pickups-total {
+  min-width: 190px;
+  padding: 18px 22px;
+  border: 1px solid #d8e7de;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #ffffff, #f2f8f4);
+  box-shadow: 0 10px 30px rgba(16, 61, 46, 0.08);
+  text-align: right;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.admin-pickups-total:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 38px rgba(16, 61, 46, 0.12);
+}
+
+.admin-pickups-total span {
+  display: block;
+  color: #59675f;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.admin-pickups-total strong {
+  display: block;
+  margin-top: 4px;
+  color: #15563e;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.admin-pickups-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.admin-pickup-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 105px;
+  padding: 18px;
+  border: 1px solid #e1e7e3;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 7px 23px rgba(16, 61, 46, 0.05);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.admin-pickup-summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(16, 61, 46, 0.1);
+}
+
+.admin-pickup-summary-icon {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.admin-pickup-summary-card span {
+  display: block;
+  margin-bottom: 4px;
+  color: #718078;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+}
+
+.admin-pickup-summary-card strong {
+  color: #17211c;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.summary-total .admin-pickup-summary-icon {
+  background: #e5f1eb;
+  color: #15563e;
+}
+
+.summary-pending .admin-pickup-summary-icon {
+  background: #fff3d6;
+  color: #a46b00;
+}
+
+.summary-completed .admin-pickup-summary-icon {
+  background: #e5f7ed;
+  color: #16834d;
+}
+
+.summary-cancelled .admin-pickup-summary-icon {
+  background: #ffeded;
+  color: #b42318;
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.admin-pickups-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 12px;
+  padding: 15px;
+  border: 1px solid #e0e6e2;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 7px 25px rgba(16, 61, 46, 0.05);
+}
+
+.admin-pickups-search {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 14px;
+  border: 1px solid #d4ddd8;
+  border-radius: 11px;
+  background: #fafcfb;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.admin-pickups-search:focus-within {
+  border-color: #258761;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 135, 97, 0.11);
+}
+
+.admin-pickups-search > span {
+  color: #258761;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.admin-pickups-search input {
+  min-height: 48px;
+  padding: 8px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #17211c;
+  font-size: 15px;
+}
+
+.admin-pickups-search input:focus {
+  box-shadow: none;
+}
+
+.admin-pickups-search input::placeholder {
+  color: #7b877f;
+}
+
+.admin-pickups-filter {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.admin-pickups-filter label {
+  margin: 0;
+  color: #59675f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-pickups-filter select {
+  min-width: 160px;
+  min-height: 46px;
+  padding: 9px 12px;
+  border: 1px solid #d4ddd8;
+  border-radius: 10px;
+  color: #27342d;
+  font-size: 14px;
+  font-weight: 700;
+  outline: 0;
+}
+
+.admin-pickups-filter select:focus {
+  border-color: #258761;
+  box-shadow: 0 0 0 4px rgba(37, 135, 97, 0.1);
+}
+
+.admin-pickups-results {
+  margin: 0 2px 13px;
+  color: #718078;
+  font-size: 13px;
+}
+
+.admin-pickups-results strong {
+  color: #15563e;
+  font-size: 14px;
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.admin-pickups-table-wrap {
+  overflow: auto;
+  border: 1px solid #dfe6e1;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 9px 28px rgba(16, 61, 46, 0.06);
+}
+
+.admin-pickups-table {
+  width: 100%;
+  min-width: 1250px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.admin-pickups-table thead th {
+  padding: 16px 17px;
+  border-bottom: 1px solid #dfe6e1;
+  background: #f5f8f6;
+  color: #59675f;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.9px;
+  white-space: nowrap;
+}
+
+.admin-pickups-table tbody td {
+  padding: 17px;
+  border-bottom: 1px solid #edf0ee;
+  color: #27342d;
+  vertical-align: middle;
+}
+
+.admin-pickups-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-pickup-row {
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-pickup-row:hover {
+  background: #f8fbf9;
+}
+
+/* =========================================================
+   REQUEST / FOOD
+   ========================================================= */
+
+.admin-pickup-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 210px;
+}
+
+.admin-pickup-avatar {
+  width: 47px;
+  height: 47px;
+  flex: 0 0 47px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #15563e, #258761);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 6px 15px rgba(21, 86, 62, 0.16);
+}
+
+.admin-pickup-main strong {
+  display: block;
+  max-width: 220px;
+  overflow: hidden;
+  color: #17211c;
+  font-size: 15px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-pickup-main span {
+  display: block;
+  margin-top: 4px;
+  color: #7b877f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   DONOR / NGO
+   ========================================================= */
+
+.admin-pickup-party {
+  min-width: 150px;
+}
+
+.admin-pickup-party strong {
+  display: block;
+  max-width: 180px;
+  overflow: hidden;
+  color: #27342d;
+  font-size: 14px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-pickup-party span {
+  display: block;
+  margin-top: 3px;
+  color: #8a948e;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   QUANTITY
+   ========================================================= */
+
+.admin-pickup-quantity {
+  display: inline-flex;
+  align-items: center;
+  min-width: 65px;
+  padding: 8px 11px;
+  border-radius: 9px;
+  background: #f0f6f2;
+  color: #15563e;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.admin-pickup-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.admin-pickup-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.admin-pickups-status-success {
+  background: #e6f7ee;
+  color: #14733f;
+}
+
+.admin-pickups-status-success .admin-pickup-status-dot {
+  background: #1c9b59;
+}
+
+.admin-pickups-status-warning {
+  background: #fff4d9;
+  color: #946300;
+}
+
+.admin-pickups-status-warning .admin-pickup-status-dot {
+  background: #d39100;
+}
+
+.admin-pickups-status-danger {
+  background: #ffeded;
+  color: #b42318;
+}
+
+.admin-pickups-status-danger .admin-pickup-status-dot {
+  background: #d33c32;
+}
+
+.admin-pickups-status-neutral {
+  background: #edf1ef;
+  color: #59675f;
+}
+
+.admin-pickups-status-neutral .admin-pickup-status-dot {
+  background: #7b877f;
+}
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+.admin-pickup-date {
+  min-width: 130px;
+  color: #46544c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   MAP
+   ========================================================= */
+
+.admin-pickup-map-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 105px;
+  padding: 9px 12px;
+  border: 1px solid #bcd9ca;
+  border-radius: 9px;
+  background: #f0f8f3;
+  color: #15563e;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-pickup-map-button:hover {
+  background: #e2f2e9;
+  box-shadow: 0 7px 17px rgba(21, 86, 62, 0.12);
+  transform: translateY(-2px);
+}
+
+.admin-pickup-map-button span {
+  font-size: 16px;
+}
+
+.admin-pickup-no-location {
+  color: #8a948e;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.admin-pickups-loading {
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  border: 1px solid #e0e6e2;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(16, 61, 46, 0.05);
+  text-align: center;
+}
+
+.admin-pickups-spinner {
+  width: 45px;
+  height: 45px;
+  margin-bottom: 18px;
+  border: 4px solid #dce9e2;
+  border-top-color: #258761;
+  border-radius: 50%;
+  animation: adminPickupsSpin 0.8s linear infinite;
+}
+
+@keyframes adminPickupsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.admin-pickups-loading strong {
+  color: #17211c;
+  font-size: 18px;
+}
+
+.admin-pickups-loading p {
+  margin-top: 7px;
+  color: #7b877f;
+  font-size: 14px;
+}
+
+/* =========================================================
+   EMPTY / NO RESULTS
+   ========================================================= */
+
+.admin-pickups-empty,
+.admin-pickups-no-results {
+  padding: 55px 25px;
+  border: 1px solid #dfe6e1;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(16, 61, 46, 0.05);
+  text-align: center;
+}
+
+.admin-pickups-empty-icon,
+.admin-pickups-no-results-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.admin-pickups-empty-icon {
+  background: #e5f7ed;
+  color: #16834d;
+}
+
+.admin-pickups-no-results-icon {
+  background: #edf2ef;
+  color: #59675f;
+}
+
+.admin-pickups-empty h2,
+.admin-pickups-no-results h2 {
+  color: #17211c;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.admin-pickups-empty p,
+.admin-pickups-no-results p {
+  margin-top: 8px;
+  color: #6b7770;
+  font-size: 15px;
+}
+
+.admin-pickups-empty > .empty {
+  display: none;
+}
+
+.admin-pickups-no-results button {
+  margin-top: 20px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: #15563e;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-pickups-no-results button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(21, 86, 62, 0.2);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+  .admin-pickups-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 850px) {
+  .admin-pickups-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-pickups-total {
+    min-width: 170px;
+    text-align: left;
+  }
+
+  .admin-pickups-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-pickups-filter {
+    justify-content: space-between;
+  }
+
+  .admin-pickups-filter select {
+    flex: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-pickups-header .page-title h1 {
+    font-size: 30px;
+  }
+
+  .admin-pickups-header .page-title p {
+    font-size: 14px;
+  }
+
+  .admin-pickups-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-pickup-summary-card {
+    min-height: 95px;
+  }
+
+  .admin-pickups-filter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-pickups-filter select {
+    width: 100%;
+  }
+}

@@ -1,0 +1,635 @@
+/* =========================================================
+   NGO REQUEST DONATION
+   FOODRESCUE
+   ========================================================= */
+
+.ngo-request-page {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  animation: ngoRequestFade 0.4s ease both;
+}
+
+@keyframes ngoRequestFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.ngo-request-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.ngo-request-eyebrow {
+  margin-bottom: 7px;
+  color: #258761;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.ngo-request-header .page-title {
+  margin-bottom: 0;
+}
+
+.ngo-request-header .page-title h1 {
+  color: #102f24;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.ngo-request-header .page-title p {
+  max-width: 700px;
+  margin-top: 8px;
+  color: #607169;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ngo-request-summary {
+  min-width: 150px;
+  padding: 15px 18px;
+  background: #ffffff;
+  border: 1px solid #dfe8e2;
+  border-radius: 11px;
+  box-shadow: 0 3px 12px rgba(16, 61, 46, 0.045);
+  text-align: right;
+}
+
+.ngo-request-summary span {
+  display: block;
+  color: #77857f;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ngo-request-summary strong {
+  display: block;
+  margin-top: 4px;
+  color: #15563e;
+  font-size: 27px;
+  font-weight: 850;
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.ngo-request-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.ngo-request-search {
+  position: relative;
+  width: min(620px, 100%);
+}
+
+.ngo-request-search input {
+  width: 100%;
+  height: 48px;
+  padding: 0 45px 0 43px;
+  border: 1px solid #d7e1db;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #263a31;
+  font-size: 13px;
+  outline: none;
+  box-shadow: 0 3px 10px rgba(16, 61, 46, 0.035);
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.ngo-request-search input::placeholder {
+  color: #98a39e;
+}
+
+.ngo-request-search input:focus {
+  border-color: #72a88d;
+  box-shadow: 0 0 0 3px rgba(37, 135, 97, 0.09);
+}
+
+.ngo-search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5e7669;
+  font-size: 22px;
+  pointer-events: none;
+}
+
+.ngo-search-clear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 50%;
+  background: #edf3ef;
+  color: #5f7068;
+  font-size: 18px;
+}
+
+.ngo-search-clear:hover {
+  background: #dfeae3;
+}
+
+.ngo-request-count {
+  flex-shrink: 0;
+  color: #75847d;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   DONATION GRID
+   ========================================================= */
+
+.ngo-donation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* =========================================================
+   DONATION CARD
+   ========================================================= */
+
+.ngo-donation-card {
+  position: relative;
+  overflow: hidden;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #dfe8e2;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(16, 61, 46, 0.045);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ngo-donation-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #258761;
+}
+
+.ngo-donation-card:hover {
+  transform: translateY(-3px);
+  border-color: #c6dbcd;
+  box-shadow: 0 12px 28px rgba(16, 61, 46, 0.09);
+}
+
+/* =========================================================
+   CARD TOP
+   ========================================================= */
+
+.ngo-donation-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.ngo-donation-food {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ngo-food-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: #e8f3ec;
+  color: #15563e;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.ngo-donation-id {
+  display: block;
+  margin-bottom: 3px;
+  color: #8b9892;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+}
+
+.ngo-donation-food h2 {
+  overflow: hidden;
+  color: #19362a;
+  font-size: 18px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ngo-priority-badge {
+  flex-shrink: 0;
+  padding: 7px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.priority-critical {
+  background: #fff0f0;
+  color: #b33f3f;
+}
+
+.priority-high {
+  background: #fff4df;
+  color: #a66c18;
+}
+
+.priority-medium {
+  background: #eaf3fa;
+  color: #3b709b;
+}
+
+.priority-normal {
+  background: #e9f3ed;
+  color: #286047;
+}
+
+/* =========================================================
+   PRIORITY PANEL
+   ========================================================= */
+
+.ngo-priority-panel {
+  margin-top: 18px;
+  padding: 14px 15px;
+  background: #f5f9f6;
+  border: 1px solid #e4ece7;
+  border-radius: 10px;
+}
+
+.ngo-priority-panel > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ngo-priority-panel span {
+  color: #718179;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+}
+
+.ngo-priority-panel strong {
+  color: #15563e;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+.ngo-priority-panel strong small {
+  color: #84928b;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.ngo-priority-meter {
+  width: 100%;
+  height: 7px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #dfe9e3;
+}
+
+.ngo-priority-meter div {
+  height: 100%;
+  min-width: 2px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #70ae8e, #258761, #15563e);
+  transition: width 0.4s ease;
+}
+
+/* =========================================================
+   DETAILS
+   ========================================================= */
+
+.ngo-donation-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.ngo-detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ngo-detail-wide {
+  grid-column: 1 / -1;
+}
+
+.ngo-detail-icon {
+  width: 31px;
+  height: 31px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #f0f5f2;
+  color: #39745a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ngo-detail-item small {
+  display: block;
+  margin-bottom: 3px;
+  color: #8a9690;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.ngo-detail-item strong {
+  display: block;
+  overflow: hidden;
+  color: #35483e;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.ngo-donation-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 20px;
+  padding-top: 17px;
+  border-top: 1px solid #e9eeeb;
+}
+
+.ngo-time-remaining {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.ngo-time-icon {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: #fff4df;
+  color: #a56c18;
+  font-size: 15px;
+}
+
+.ngo-time-remaining small {
+  display: block;
+  margin-bottom: 3px;
+  color: #8a9690;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+}
+
+.ngo-time-remaining strong {
+  color: #8d611b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.ngo-request-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 145px;
+  padding: 11px 15px;
+  border: 0;
+  border-radius: 9px;
+  background: #15563e;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 750;
+  box-shadow: 0 6px 15px rgba(21, 86, 62, 0.16);
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.ngo-request-button:hover:not(:disabled) {
+  background: #103d2e;
+  transform: translateY(-1px);
+  box-shadow: 0 9px 20px rgba(21, 86, 62, 0.22);
+}
+
+.ngo-request-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.ngo-button-spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: ngoButtonSpin 0.7s linear infinite;
+}
+
+@keyframes ngoButtonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.ngo-request-loading {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 35px;
+  background: #ffffff;
+  border: 1px solid #dfe8e2;
+  border-radius: 14px;
+}
+
+.ngo-loading-spinner {
+  width: 38px;
+  height: 38px;
+  margin-bottom: 16px;
+  border: 3px solid #dce9e1;
+  border-top-color: #258761;
+  border-radius: 50%;
+  animation: ngoLoadingSpin 0.8s linear infinite;
+}
+
+@keyframes ngoLoadingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ngo-request-loading strong {
+  color: #30463b;
+  font-size: 14px;
+}
+
+.ngo-request-loading p {
+  margin-top: 6px;
+  color: #89958f;
+  font-size: 12px;
+}
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.ngo-request-empty {
+  width: 100%;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .ngo-donation-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .ngo-request-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ngo-request-summary {
+    width: 100%;
+    text-align: left;
+  }
+
+  .ngo-request-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ngo-request-search {
+    width: 100%;
+  }
+
+  .ngo-request-count {
+    padding-left: 2px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ngo-request-header .page-title h1 {
+    font-size: 27px;
+  }
+
+  .ngo-donation-card {
+    padding: 18px;
+  }
+
+  .ngo-donation-top {
+    align-items: flex-start;
+  }
+
+  .ngo-donation-food h2 {
+    max-width: 190px;
+    font-size: 16px;
+  }
+
+  .ngo-priority-badge {
+    padding: 6px 8px;
+    font-size: 9px;
+  }
+
+  .ngo-donation-details {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-detail-wide {
+    grid-column: auto;
+  }
+
+  .ngo-donation-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ngo-request-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .ngo-donation-top {
+    flex-direction: column;
+  }
+
+  .ngo-priority-badge {
+    align-self: flex-start;
+  }
+
+  .ngo-request-summary strong {
+    font-size: 24px;
+  }
+}

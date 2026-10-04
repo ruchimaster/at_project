@@ -1,0 +1,265 @@
+/* =========================================================
+   FOODRESCUE — DASHBOARD LAYOUT
+   Sidebar + Topbar + Main Content
+   ========================================================= */
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  background: var(--cream-50);
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+
+  background: var(--forest-900);
+  color: var(--white);
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 25px 16px;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+/* BRAND */
+
+.brand {
+  padding: 0 10px;
+  margin-bottom: 35px;
+
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+
+  color: var(--white);
+}
+
+/* NAVIGATION */
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nav-item {
+  display: block;
+
+  padding: 12px 14px;
+
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+
+  border-radius: 9px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  transform: translateX(2px);
+}
+
+.nav-item.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  font-weight: 700;
+}
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+.logout {
+  margin-top: auto;
+
+  width: 100%;
+
+  padding: 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.logout:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   MAIN AREA
+   ========================================================= */
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+
+  margin-left: 250px;
+
+  min-height: 100vh;
+}
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+.topbar {
+  height: 75px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border-bottom: 1px solid var(--border);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 30px;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 20;
+}
+
+.topbar strong {
+  display: block;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  color: var(--text-primary);
+}
+
+.role-text {
+  display: block;
+
+  margin-top: 4px;
+
+  font-size: 13px;
+
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   PROFILE BUTTON
+   ========================================================= */
+
+.profile-button {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: var(--green-100);
+  color: var(--forest-900);
+
+  cursor: pointer;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile-button:hover {
+  background: #d4e7dd;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.content {
+  width: 100%;
+  max-width: 1240px;
+
+  margin: 0 auto;
+
+  padding: 30px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 210px;
+  }
+
+  .main-area {
+    margin-left: 210px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  .topbar {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    width: 180px;
+    padding: 18px 10px;
+  }
+
+  .main-area {
+    margin-left: 180px;
+  }
+
+  .brand {
+    font-size: 20px;
+  }
+
+  .nav-item {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .content {
+    padding: 15px;
+  }
+
+  .topbar {
+    padding: 0 15px;
+  }
+}

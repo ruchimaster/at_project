@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-
+import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 
@@ -42,15 +42,12 @@ function App() {
   return (
     <Routes>
       {/* AUTH */}
-
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
-
       <Route path="/register" element={<Register />} />
-
       <Route path="/pending-approval" element={<PendingApproval />} />
 
       {/* DONOR */}
-
       <Route
         element={
           <ProtectedRoute allowedRoles={["Donor"]}>
@@ -60,7 +57,14 @@ function App() {
       >
         <Route path="/donor/dashboard" element={<DonorDashboard />} />
 
+        {/* Create Donation */}
         <Route path="/donor/donation-form" element={<DonationForm />} />
+
+        {/* Edit Donation */}
+        <Route
+          path="/donor/donations/:donation_id/edit"
+          element={<DonationForm />}
+        />
 
         <Route path="/donor/past-donations" element={<PastDonations />} />
 
@@ -82,7 +86,6 @@ function App() {
       </Route>
 
       {/* NGO */}
-
       <Route
         element={
           <ProtectedRoute allowedRoles={["NGO"]}>
@@ -111,7 +114,6 @@ function App() {
       </Route>
 
       {/* ADMIN */}
-
       <Route
         element={
           <ProtectedRoute allowedRoles={["Admin"]}>
@@ -144,7 +146,6 @@ function App() {
       </Route>
 
       {/* FALLBACK */}
-
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
