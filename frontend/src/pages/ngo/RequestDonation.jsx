@@ -116,6 +116,44 @@ export default function RequestDonation() {
     return level;
   }
 
+  // =====================================================
+  // FORMAT EXACT TIME REMAINING
+  // =====================================================
+  function formatTimeRemaining(date) {
+    if (!date) {
+      return "—";
+    }
+
+    const expiryTime = new Date(date).getTime();
+    const currentTime = Date.now();
+
+    const difference = expiryTime - currentTime;
+
+    if (difference <= 0) {
+      return "Expired";
+    }
+
+    const totalMinutes = Math.floor(difference / (1000 * 60));
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    // Less than one hour
+    if (hours === 0) {
+      return `${minutes} minute${minutes === 1 ? "" : "s"}`;
+    }
+
+    // Exact number of hours
+    if (minutes === 0) {
+      return `${hours} hour${hours === 1 ? "" : "s"}`;
+    }
+
+    // Hours + minutes
+    return `${hours} hour${hours === 1 ? "" : "s"} ${
+      minutes
+    } minute${minutes === 1 ? "" : "s"}`;
+  }
+
   return (
     <div className="ngo-request-page">
       <div className="ngo-request-header">
@@ -196,6 +234,8 @@ export default function RequestDonation() {
             const priorityClass = getPriorityClass(donation.priority_level);
 
             const isRequesting = requestingId === donation.donation_id;
+
+            const timeRemaining = formatTimeRemaining(donation.available_until);
 
             return (
               <article className="ngo-donation-card" key={donation.donation_id}>
@@ -291,20 +331,22 @@ export default function RequestDonation() {
                     <div>
                       <small>TIME REMAINING</small>
 
-                      <strong>{donation.hours_remaining ?? 0} hours</strong>
+                      <strong>{timeRemaining}</strong>
                     </div>
                   </div>
 
                   <button
                     className="ngo-request-button"
                     onClick={() => requestDonation(donation.donation_id)}
-                    disabled={isRequesting}
+                    disabled={isRequesting || timeRemaining === "Expired"}
                   >
                     {isRequesting ? (
                       <>
                         <span className="ngo-button-spinner" />
                         Sending...
                       </>
+                    ) : timeRemaining === "Expired" ? (
+                      "Expired"
                     ) : (
                       <>
                         Request Pickup

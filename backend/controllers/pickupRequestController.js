@@ -4,7 +4,10 @@ const PickupRequest = require("../models/pickupRequests");
 const Donation = require("../models/donations");
 const User = require("../models/users");
 
-const { createNotification } = require("./notificationController");
+// IMPORTANT:
+// Use the notification helper for internal notifications.
+// Do NOT import createNotification from notificationController.
+const { createNotification } = require("../utils/notificationHelper");
 
 // ============================================================
 // CREATE PICKUP REQUEST
@@ -57,17 +60,33 @@ const createPickupRequest = async (req, res, next) => {
       });
     }
 
-    const lastRequest = await PickupRequest.findOne()
-      .sort({ created_at: -1 })
-      .session(session);
+    // --------------------------------------------------------
+    // GENERATE NEXT UNIQUE REQUEST ID
+    // --------------------------------------------------------
+    // request_id is stored as REQ001, REQ002, REQ003, etc.
+    // We find the highest existing numeric request ID and
+    // generate the next number.
+    //
+    // This avoids depending on created_at, which does not exist
+    // in the PickupRequest schema.
+    // --------------------------------------------------------
+
+    const existingRequests = await PickupRequest.find({})
+      .select("request_id")
+      .session(session)
+      .lean();
 
     let nextNumber = 1;
 
-    if (lastRequest?.request_id) {
-      const match = lastRequest.request_id.match(/(\d+)$/);
+    for (const request of existingRequests) {
+      const match = request.request_id?.match(/^REQ(\d+)$/);
 
       if (match) {
-        nextNumber = Number(match[1]) + 1;
+        const number = Number(match[1]);
+
+        if (number >= nextNumber) {
+          nextNumber = number + 1;
+        }
       }
     }
 
@@ -92,13 +111,24 @@ const createPickupRequest = async (req, res, next) => {
 
     await session.commitTransaction();
 
-    await createNotification({
-      user_id: donation.donor_id,
-      title: "New Pickup Request",
-      message: `A pickup request has been received for your donation ${donation.donation_id}.`,
-      type: "Pickup Request",
-      reference_id: request_id,
-    });
+    // --------------------------------------------------------
+    // NOTIFICATION
+    // --------------------------------------------------------
+    // This is intentionally outside the transaction.
+    // The helper expects:
+    //
+    // createNotification(user_id, message, type)
+    // --------------------------------------------------------
+
+    try {
+      await createNotification(
+        donation.donor_id,
+        `A pickup request has been received for your donation ${donation.donation_id}.`,
+        "Pickup Request",
+      );
+    } catch (notificationError) {
+      console.error("Pickup request notification error:", notificationError);
+    }
 
     return res.status(201).json({
       success: true,
@@ -106,10 +136,14 @@ const createPickupRequest = async (req, res, next) => {
       data: pickupRequest[0],
     });
   } catch (error) {
-    await session.abortTransaction();
+    // Only abort if the transaction is still active.
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
+
     next(error);
   } finally {
-    session.endSession();
+    await session.endSession();
   }
 };
 
@@ -151,7 +185,7 @@ const getAllPickupRequests = async (req, res, next) => {
     }
 
     const requests = await PickupRequest.find(query)
-      .sort({ created_at: -1 })
+      .sort({ request_date: -1 })
       .lean();
 
     if (requests.length === 0) {
@@ -206,12 +240,6 @@ const getAllPickupRequests = async (req, res, next) => {
 
     // --------------------------------------------------------
     // Get donor + NGO information
-    //
-    // IMPORTANT:
-    // We now fetch "address" as well because Maps needs:
-    //
-    // Origin      = donation.pickup_address
-    // Destination = NGO user's address
     // --------------------------------------------------------
 
     const userIds = [...new Set([...ngoIds, ...donorIds])];
@@ -308,7 +336,7 @@ const getPickupRequestById = async (req, res, next) => {
     }
 
     // --------------------------------------------------------
-    // Authorization
+    // AUTHORIZATION
     // --------------------------------------------------------
 
     const isAdmin = req.user.role === "Admin";
@@ -328,8 +356,6 @@ const getPickupRequestById = async (req, res, next) => {
 
     // --------------------------------------------------------
     // Fetch donor + NGO
-    //
-    // Address is included for Maps routing.
     // --------------------------------------------------------
 
     const users = await User.find({
@@ -443,6 +469,10 @@ const updatePickupRequest = async (req, res, next) => {
 
       await pickupRequest.save();
 
+      // ------------------------------------------------------
+      // DONOR ACCEPTS REQUEST
+      // ------------------------------------------------------
+
       if (request_status === "Accepted") {
         await Donation.findOneAndUpdate(
           {
@@ -453,14 +483,23 @@ const updatePickupRequest = async (req, res, next) => {
           },
         );
 
-        await createNotification({
-          user_id: pickupRequest.ngo_id,
-          title: "Pickup Request Accepted",
-          message: `Your pickup request ${pickupRequest.request_id} has been accepted by the donor.`,
-          type: "Pickup Request",
-          reference_id: pickupRequest.request_id,
-        });
+        try {
+          await createNotification(
+            pickupRequest.ngo_id,
+            `Your pickup request ${pickupRequest.request_id} has been accepted by the donor.`,
+            "Pickup Request",
+          );
+        } catch (notificationError) {
+          console.error(
+            "Pickup acceptance notification error:",
+            notificationError,
+          );
+        }
       }
+
+      // ------------------------------------------------------
+      // DONOR REJECTS REQUEST
+      // ------------------------------------------------------
 
       if (request_status === "Rejected") {
         await Donation.findOneAndUpdate(
@@ -472,13 +511,18 @@ const updatePickupRequest = async (req, res, next) => {
           },
         );
 
-        await createNotification({
-          user_id: pickupRequest.ngo_id,
-          title: "Pickup Request Rejected",
-          message: `Your pickup request ${pickupRequest.request_id} has been rejected by the donor.`,
-          type: "Pickup Request",
-          reference_id: pickupRequest.request_id,
-        });
+        try {
+          await createNotification(
+            pickupRequest.ngo_id,
+            `Your pickup request ${pickupRequest.request_id} has been rejected by the donor.`,
+            "Pickup Request",
+          );
+        } catch (notificationError) {
+          console.error(
+            "Pickup rejection notification error:",
+            notificationError,
+          );
+        }
       }
 
       return res.status(200).json({
@@ -500,6 +544,10 @@ const updatePickupRequest = async (req, res, next) => {
         });
       }
 
+      // ------------------------------------------------------
+      // NGO CANCELS REQUEST
+      // ------------------------------------------------------
+
       if (request_status === "Cancelled") {
         if (!["Pending", "Accepted"].includes(pickupRequest.request_status)) {
           return res.status(400).json({
@@ -512,24 +560,27 @@ const updatePickupRequest = async (req, res, next) => {
 
         await pickupRequest.save();
 
-        if (pickupRequest.request_status !== "Completed") {
-          await Donation.findOneAndUpdate(
-            {
-              donation_id: pickupRequest.donation_id,
-            },
-            {
-              status: "Available",
-            },
+        await Donation.findOneAndUpdate(
+          {
+            donation_id: pickupRequest.donation_id,
+          },
+          {
+            status: "Available",
+          },
+        );
+
+        try {
+          await createNotification(
+            donation.donor_id,
+            `Pickup request ${pickupRequest.request_id} has been cancelled by the NGO.`,
+            "Pickup Request",
+          );
+        } catch (notificationError) {
+          console.error(
+            "Pickup cancellation notification error:",
+            notificationError,
           );
         }
-
-        await createNotification({
-          user_id: donation.donor_id,
-          title: "Pickup Request Cancelled",
-          message: `Pickup request ${pickupRequest.request_id} has been cancelled by the NGO.`,
-          type: "Pickup Request",
-          reference_id: pickupRequest.request_id,
-        });
 
         return res.status(200).json({
           success: true,
@@ -537,6 +588,10 @@ const updatePickupRequest = async (req, res, next) => {
           data: pickupRequest,
         });
       }
+
+      // ------------------------------------------------------
+      // NGO COMPLETES PICKUP
+      // ------------------------------------------------------
 
       if (request_status === "Completed") {
         if (pickupRequest.request_status !== "Accepted") {
@@ -555,13 +610,22 @@ const updatePickupRequest = async (req, res, next) => {
 
         await donation.save();
 
-        await createNotification({
-          user_id: donation.donor_id,
-          title: "Pickup Completed",
-          message: `Pickup request ${pickupRequest.request_id} has been completed.`,
-          type: "Pickup Request",
-          reference_id: pickupRequest.request_id,
-        });
+        // ----------------------------------------------------
+        // COMPLETION NOTIFICATION
+        // ----------------------------------------------------
+
+        try {
+          await createNotification(
+            donation.donor_id,
+            `Pickup request ${pickupRequest.request_id} has been completed.`,
+            "Pickup Request",
+          );
+        } catch (notificationError) {
+          console.error(
+            "Pickup completion notification error:",
+            notificationError,
+          );
+        }
 
         return res.status(200).json({
           success: true,
@@ -578,7 +642,7 @@ const updatePickupRequest = async (req, res, next) => {
 
     return res.status(403).json({
       success: false,
-      message: "You are not authorized to update this request.",
+      message: "You are not authorized to update pickup requests.",
     });
   } catch (error) {
     next(error);
